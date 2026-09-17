@@ -3,32 +3,816 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Cùng lối</title>
+<title>UEH Connect</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg-page: #F6F3EC;
-    --surface: #FFFFFF;
-    --surface-soft: #EFEBE0;
-    --text-primary: #22241F;
-    --text-secondary: #6E6C5F;
-    --text-muted: #9D9B8B;
-    --border: rgba(34,36,31,0.12);
-    --accent: #3E6B5C;
-    --accent-soft: #E1EAE4;
-    --accent-text: #2A4B40;
-    --warm: #B96A2E;
-    --warm-soft: #F3E3D2;
-    --warm-text: #8A4E1F;
-    --rose: #A85468;
-    --rose-soft: #F1E0E4;
-    --rose-text: #7C3A4C;
-    --danger: #B3423A;
+  :root{
+    --bg-page:#F6F6FB; --surface:#FFFFFF; --surface-soft:#F1F1F7;
+    --text-primary:#1C1B29; --text-secondary:#67657C; --text-muted:#9D9BAF;
+    --border:rgba(28,27,41,0.10);
+    --navy:#14213D; --navy-soft:#E7EAF3; --navy-text:#14213D;
+    --gold:#F2A825; --gold-soft:#FCEBC7; --gold-text:#8A5A05;
+    --mint:#2FA88A; --mint-soft:#DBF2EC; --mint-text:#1F6E5B;
+    --rose:#E0577B; --rose-soft:#FBE3EA; --rose-text:#A13A57;
+    --danger:#D64545;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg-page: #1B1D18;
-      --surface: #24261F;
-  
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg-page:#15151C; --surface:#1E1E27; --surface-soft:#26262F;
+      --text-primary:#F2F1F7; --text-secondary:#AEACC0; --text-muted:#7C7A8F;
+      --border:rgba(255,255,255,0.10);
+      --navy:#8DA0D6; --navy-soft:rgba(141,160,214,0.16); --navy-text:#AEBDE6;
+      --gold:#F2C066; --gold-soft:rgba(242,168,37,0.16); --gold-text:#F2C066;
+      --mint:#63C9AC; --mint-soft:rgba(47,168,138,0.18); --mint-text:#7FDBC0;
+      --rose:#E888A2; --rose-soft:rgba(224,87,123,0.16); --rose-text:#E888A2;
+      --danger:#E0837C;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg-page);font-family:'Inter',-apple-system,sans-serif;color:var(--text-primary);display:flex;justify-content:center;padding:28px 14px;min-height:100vh;}
+  .disp{font-family:'Space Grotesk',sans-serif;}
+  .frame{width:390px;max-width:100%;height:800px;background:var(--surface);border-radius:26px;border:1px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,0.14);overflow:hidden;display:flex;flex-direction:column;position:relative;}
+
+  /* ===== AUTH ===== */
+  .auth{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 26px;gap:6px;}
+  .auth .mark{width:52px;height:52px;border-radius:14px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:20px;margin-bottom:16px;}
+  .auth h1{font-size:24px;font-weight:700;margin:0 0 4px;}
+  .auth p.sub{font-size:13px;color:var(--text-secondary);margin:0 0 24px;}
+  .field{margin-bottom:12px;}
+  .field label{font-size:12px;color:var(--text-secondary);display:block;margin-bottom:5px;}
+  .field input{width:100%;font-family:inherit;font-size:14px;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface-soft);color:var(--text-primary);}
+  .err{font-size:12px;color:var(--danger);margin:-4px 0 10px;}
+  .btn-block{width:100%;background:var(--navy);color:#fff;font-size:14px;font-weight:600;padding:12px;border-radius:10px;border:none;font-family:inherit;cursor:pointer;margin-top:6px;}
+  .auth .switch{text-align:center;font-size:13px;color:var(--text-secondary);margin-top:18px;}
+  .auth .switch b{color:var(--navy-text);cursor:pointer;}
+
+  /* ===== SHELL ===== */
+  .topbar{flex-shrink:0;padding:14px 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+  .topbar .name{font-family:'Space Grotesk';font-weight:700;font-size:16px;flex:1;}
+  .icon-btn{position:relative;width:34px;height:34px;border-radius:10px;background:var(--surface-soft);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;color:var(--text-primary);}
+  .dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--rose);}
+  .searchbar{flex-shrink:0;padding:0 16px;overflow:hidden;max-height:0;transition:max-height .18s;}
+  .searchbar.open{max-height:60px;padding:10px 16px;}
+  .searchbar input{width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface-soft);font-family:inherit;font-size:13px;color:var(--text-primary);}
+
+  main{flex:1;overflow-y:auto;padding:14px 16px 20px;}
+  .tabscreen{display:none;}
+  .tabscreen.active{display:block;}
+
+  .greet{font-size:13px;color:var(--text-secondary);margin:0 0 14px;}
+  .sec-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;}
+  .sec-head:first-child{margin-top:0;}
+  .sec-head h3{font-size:14px;font-weight:600;margin:0;}
+  .sec-head a{font-size:12px;color:var(--navy-text);cursor:pointer;}
+  .hrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:2px;}
+  .hcard{flex:0 0 148px;background:var(--surface-soft);border-radius:12px;padding:11px;cursor:pointer;}
+  .hcard .tag{font-size:10px;padding:2px 7px;border-radius:20px;display:inline-block;margin-bottom:6px;}
+  .hcard p{font-size:12px;line-height:1.4;margin:0;}
+  .hcard .meta{font-size:10px;color:var(--text-muted);margin-top:6px;}
+
+  .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;}
+  .chip{flex-shrink:0;font-size:12px;padding:6px 13px;border-radius:20px;border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;background:var(--surface);}
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  .composer{background:var(--surface-soft);border-radius:14px;padding:13px;margin-bottom:14px;}
+  .composer textarea,.composer input,.composer select{width:100%;font-family:inherit;font-size:13.5px;border:1px solid var(--border);border-radius:9px;padding:9px 10px;background:var(--surface);color:var(--text-primary);margin-bottom:8px;resize:none;}
+  .composer textarea{min-height:56px;}
+  .composer .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .composer .row-end{display:flex;align-items:center;justify-content:space-between;margin-top:2px;}
+  .composer label.chk{font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--navy);color:#fff;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:9px;border:none;font-family:inherit;cursor:pointer;}
+  .btn-ghost{border:1px solid var(--border);background:var(--surface);font-size:12.5px;padding:7px 12px;border-radius:9px;color:var(--text-primary);cursor:pointer;font-family:inherit;}
+
+  .card{background:var(--surface-soft);border-radius:14px;padding:13px;margin-bottom:10px;}
+  .card.flagged{opacity:.55;}
+  .flag-note{font-size:11px;color:var(--danger);margin:0 0 6px;}
+  .ph{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+  .avatar{width:28px;height:28px;border-radius:50%;background:var(--navy-soft);color:var(--navy-text);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+  .avatar.anon{background:var(--rose-soft);color:var(--rose-text);}
+  .ph .who{font-size:12.5px;font-weight:500;margin:0;}
+  .ph .meta{font-size:11px;color:var(--text-muted);margin:0;}
+  .tag-pill{font-size:10.5px;padding:2px 8px;border-radius:20px;}
+  .tag-pill.navy{background:var(--navy-soft);color:var(--navy-text);}
+  .tag-pill.gold{background:var(--gold-soft);color:var(--gold-text);}
+  .tag-pill.mint{background:var(--mint-soft);color:var(--mint-text);}
+  .tag-pill.rose{background:var(--rose-soft);color:var(--rose-text);}
+  .card .body{font-size:13.5px;line-height:1.55;margin:0 0 8px;}
+  .actions{display:flex;align-items:center;gap:14px;}
+  .aicon{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-secondary);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
+  .aicon.on{color:var(--rose);}
+  .aicon svg{width:16px;height:16px;}
+  .aicon.spacer{margin-left:auto;}
+
+  .cbox{margin-top:9px;border-top:1px solid var(--border);padding-top:9px;}
+  .cbox .citem{font-size:12px;margin-bottom:6px;}
+  .cbox .citem b{font-weight:500;}
+  .cbox .crow{display:flex;gap:6px;}
+  .cbox input{flex:1;font-size:12.5px;padding:7px 9px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-primary);font-family:inherit;}
+
+  .prog-wrap{background:var(--border);border-radius:20px;height:6px;overflow:hidden;margin:8px 0;}
+  .prog-fill{height:100%;background:var(--mint);}
+  .badge-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .badge-item{background:var(--gold-soft);color:var(--gold-text);font-size:11px;padding:6px 10px;border-radius:10px;display:flex;align-items:center;gap:5px;}
+
+  .empty{text-align:center;padding:36px 10px;color:var(--text-muted);font-size:12.5px;}
+
+  nav.bottom{flex-shrink:0;display:flex;border-top:1px solid var(--border);background:var(--surface);}
+  nav.bottom button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 10px;color:var(--text-muted);background:none;border:none;font-family:inherit;cursor:pointer;}
+  nav.bottom button.active{color:var(--navy-text);}
+  nav.bottom svg{width:18px;height:18px;}
+  nav.bottom .lbl{font-size:8.5px;}
+
+  .overlay{position:absolute;inset:0;background:var(--surface);z-index:20;display:flex;flex-direction:column;}
+  .ov-head{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);}
+  .ov-head b{font-size:14px;}
+  .backbtn{background:none;border:none;cursor:pointer;color:var(--text-primary);display:flex;}
+  .ov-body{flex:1;overflow-y:auto;padding:12px 16px;}
+  .notif-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+  .notif-item .n-icon{width:32px;height:32px;border-radius:9px;background:var(--navy-soft);color:var(--navy-text);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .notif-item p{margin:0;font-size:12.5px;line-height:1.4;}
+  .notif-item .n-time{font-size:11px;color:var(--text-muted);margin-top:2px;}
+  .notif-item .n-dot{width:7px;height:7px;border-radius:50%;background:var(--rose);flex-shrink:0;margin-top:5px;}
+
+  .lb-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+  .lb-row .rank{width:20px;font-size:12px;font-weight:600;color:var(--text-muted);}
+  .lb-row .lname{flex:1;font-size:13px;}
+  .lb-row .lpts{font-size:12px;color:var(--gold-text);font-weight:600;}
+  .lb-row.me{background:var(--gold-soft);border-radius:9px;padding:9px 8px;}
+
+  .modal-back{position:absolute;inset:0;background:rgba(0,0,0,0.4);z-index:30;display:flex;align-items:flex-end;}
+  .modal-sheet{background:var(--surface);width:100%;border-radius:18px 18px 0 0;padding:16px;max-height:80%;display:flex;flex-direction:column;}
+  .modal-sheet .m-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .modal-sheet .m-head b{font-size:14px;}
+  .modal-sheet .m-body{overflow-y:auto;}
+  .chat-msg{margin-bottom:9px;font-size:13px;}
+  .chat-msg .m-who{font-size:11px;color:var(--text-muted);margin-bottom:2px;}
+  .chat-msg .m-bub{background:var(--surface-soft);border-radius:10px;padding:7px 10px;display:inline-block;max-width:80%;}
+  .chat-msg.me{text-align:right;}
+  .chat-msg.me .m-bub{background:var(--navy);color:#fff;}
+  .chat-input-row{display:flex;gap:8px;margin-top:10px;flex-shrink:0;}
+  .chat-input-row input{flex:1;font-size:13px;padding:9px 11px;border-radius:9px;border:1px solid var(--border);background:var(--surface-soft);color:var(--text-primary);font-family:inherit;}
+
+  .toast{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:12.5px;padding:9px 16px;border-radius:20px;z-index:40;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,0.2);}
+
+  .profile-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .profile-head .pavatar{width:52px;height:52px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:600;font-size:18px;}
+  .profile-head .pname{font-size:15px;font-weight:600;margin:0;}
+  .profile-head .pemail{font-size:12px;color:var(--text-secondary);margin:0;}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
+  .stat-box{background:var(--surface-soft);border-radius:12px;padding:11px;text-align:center;}
+  .stat-box .num{font-family:'Space Grotesk';font-size:18px;font-weight:600;margin:0;}
+  .stat-box .lbl2{font-size:10.5px;color:var(--text-secondary);margin:2px 0 0;}
+  .logout{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--danger);font-size:13px;font-family:inherit;cursor:pointer;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="frame" id="frame">
+
+  <!-- AUTH -->
+  <section class="auth" id="screen-auth">
+    <div class="mark disp">UC</div>
+    <h1 class="disp" id="auth-title">Đăng nhập</h1>
+    <p class="sub">Kết nối sinh viên UEH — trò chuyện, tìm bạn đồng hành, khám phá quanh trường.</p>
+    <div class="field">
+      <label>Email</label>
+      <input id="auth-email" placeholder="ten@st.ueh.edu.vn" />
+    </div>
+    <div class="field">
+      <label>Mật khẩu</label>
+      <input id="auth-pass" type="password" placeholder="••••••••" />
+    </div>
+    <p class="err" id="auth-error" style="display:none;">Nhập đầy đủ email và mật khẩu nhé.</p>
+    <button class="btn-block" id="auth-btn" onclick="doAuth()">Đăng nhập</button>
+    <p class="switch">Chưa có tài khoản? <b onclick="toggleAuthMode()">Đăng ký</b></p>
+  </section>
+
+  <!-- MAIN SHELL -->
+  <div id="shell" style="display:none;flex-direction:column;height:100%;">
+    <header class="topbar">
+      <div class="mark disp" style="width:30px;height:30px;font-size:12px;border-radius:9px;">UC</div>
+      <div class="name disp">UEH Connect</div>
+      <button class="icon-btn" onclick="toggleSearch()" aria-label="Tìm kiếm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+      <button class="icon-btn" onclick="openNotif()" aria-label="Thông báo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot" id="notif-dot"></span>
+      </button>
+    </header>
+
+    <div class="searchbar" id="searchbar">
+      <input id="search-input" placeholder="Tìm bài viết, kèo, confession..." oninput="doSearch(this.value)" />
+    </div>
+
+    <main id="main-content">
+
+      <!-- HOME -->
+      <section class="tabscreen active" id="tab-home">
+        <p class="greet" id="home-greet"></p>
+
+        <div class="sec-head"><h3>Hoạt động gần đây</h3><a onclick="switchTab('forum')">Xem tất cả</a></div>
+        <div class="hrow" id="home-forum"></div>
+
+        <div class="sec-head"><h3>Kèo đang tìm người</h3><a onclick="switchTab('activities')">Xem tất cả</a></div>
+        <div class="hrow" id="home-activities"></div>
+
+        <div class="sec-head"><h3>Confession nổi bật</h3><a onclick="switchTab('confession')">Xem tất cả</a></div>
+        <div class="hrow" id="home-confession"></div>
+
+        <div class="sec-head"><h3>Challenge đang diễn ra</h3><a onclick="switchTab('challenge')">Xem tất cả</a></div>
+        <div class="hrow" id="home-challenge"></div>
+      </section>
+
+      <!-- FORUM -->
+      <section class="tabscreen" id="tab-forum">
+        <div class="chips" id="forum-chips"></div>
+        <div class="composer">
+          <textarea id="forum-text" placeholder="Bạn muốn hỏi hoặc chia sẻ điều gì?"></textarea>
+          <div class="grid2">
+            <select id="forum-cat">
+              <option>Học tập</option><option>Đời sống</option><option>Ăn uống</option><option>Giải trí</option><option>Kinh nghiệm</option>
+            </select>
+            <label class="chk" style="align-self:center;"><input type="checkbox" id="forum-anon"/> Ẩn danh</label>
+          </div>
+          <p class="err" id="forum-error" style="display:none;">Nhập nội dung trước khi đăng nhé.</p>
+          <div class="row-end"><span></span><button class="btn-primary" onclick="postForum()">Đăng bài</button></div>
+        </div>
+        <div id="forum-list"></div>
+      </section>
+
+      <!-- ACTIVITIES -->
+      <section class="tabscreen" id="tab-activities">
+        <div class="composer">
+          <input id="act-title" placeholder="Tên kèo — vd: Đi ăn lẩu cổng sau" />
+          <div class="grid2">
+            <input id="act-place" placeholder="Địa điểm" />
+            <input id="act-time" placeholder="Thời gian, vd: 18h thứ 7" />
+          </div>
+          <div class="grid2">
+            <input id="act-spots" type="number" min="1" placeholder="Số người cần tìm" />
+            <input id="act-cost" placeholder="Chi phí dự kiến" />
+          </div>
+          <p class="err" id="act-error" style="display:none;">Nhập ít nhất tên kèo và số người cần tìm nhé.</p>
+          <div class="row-end"><span></span><button class="btn-primary" onclick="postActivity()">Tạo kèo</button></div>
+        </div>
+        <div id="activities-list"></div>
+      </section>
+
+      <!-- CONFESSION -->
+      <section class="tabscreen" id="tab-confession">
+        <div class="composer">
+          <textarea id="conf-text" placeholder="Chia sẻ ẩn danh — review quán, tips, câu chuyện của bạn..."></textarea>
+          <p class="err" id="conf-error" style="display:none;">Viết gì đó trước khi đăng nhé.</p>
+          <div class="row-end"><span></span><button class="btn-primary" onclick="postConfession()">Đăng ẩn danh</button></div>
+        </div>
+        <div id="confession-list"></div>
+      </section>
+
+      <!-- CHALLENGE -->
+      <section class="tabscreen" id="tab-challenge">
+        <div class="sec-head" style="margin-top:0;"><h3>Thử thách</h3><a onclick="openLeaderboard()">🏆 Bảng thành tích</a></div>
+        <div id="challenge-list"></div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="tabscreen" id="tab-profile">
+        <div class="profile-head">
+          <div class="pavatar disp" id="profile-avatar"></div>
+          <div>
+            <p class="pname">Sinh viên UEH</p>
+            <p class="pemail" id="profile-email"></p>
+          </div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-box"><p class="num disp" id="stat-points">0</p><p class="lbl2">Điểm</p></div>
+          <div class="stat-box"><p class="num disp" id="stat-joined">0</p><p class="lbl2">Kèo tham gia</p></div>
+          <div class="stat-box"><p class="num disp" id="stat-posts">0</p><p class="lbl2">Bài đã đăng</p></div>
+        </div>
+        <div class="sec-head" style="margin-top:0;"><h3>Huy hiệu</h3></div>
+        <div class="badge-row" id="profile-badges"></div>
+        <div class="sec-head"><h3>Đã lưu</h3></div>
+        <div id="profile-bookmarks"></div>
+        <button class="logout" onclick="logout()">Đăng xuất</button>
+      </section>
+
+    </main>
+
+    <nav class="bottom" id="bottom-nav">
+      <button data-tab="home" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        <span class="lbl">Home</span>
+      </button>
+      <button data-tab="forum" onclick="switchTab('forum')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.38 8.5 8.5 0 0 1-4-1L3 20l1.1-5.5A8.4 8.4 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3a8.5 8.5 0 0 1 9.5 8.5Z"/></svg>
+        <span class="lbl">Forum</span>
+      </button>
+      <button data-tab="activities" onclick="switchTab('activities')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="lbl">Đi cùng</span>
+      </button>
+      <button data-tab="confession" onclick="switchTab('confession')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M2 2l20 20"/><path d="M14 8.5a4 4 0 0 1-5.7 5.7"/></svg>
+        <span class="lbl">Confession</span>
+      </button>
+      <button data-tab="challenge" onclick="switchTab('challenge')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+        <span class="lbl">Challenge</span>
+      </button>
+      <button data-tab="profile" onclick="switchTab('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span class="lbl">Profile</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- SEARCH OVERLAY -->
+  <div class="overlay" id="overlay-search" style="display:none;">
+    <div class="ov-head">
+      <button class="backbtn" onclick="closeOverlay('overlay-search')">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+      </button>
+      <b>Kết quả tìm kiếm</b>
+    </div>
+    <div class="ov-body" id="search-results"></div>
+  </div>
+
+  <!-- NOTIFICATIONS OVERLAY -->
+  <div class="overlay" id="overlay-notif" style="display:none;">
+    <div class="ov-head">
+      <button class="backbtn" onclick="closeOverlay('overlay-notif')">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+      </button>
+      <b>Thông báo</b>
+    </div>
+    <div class="ov-body" id="notif-list"></div>
+  </div>
+
+  <!-- LEADERBOARD OVERLAY -->
+  <div class="overlay" id="overlay-lb" style="display:none;">
+    <div class="ov-head">
+      <button class="backbtn" onclick="closeOverlay('overlay-lb')">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+      </button>
+      <b>Bảng thành tích</b>
+    </div>
+    <div class="ov-body" id="lb-list"></div>
+  </div>
+
+  <!-- MODAL (chat / report confirm) -->
+  <div class="modal-back" id="modal-back" style="display:none;" onclick="if(event.target===this) closeModal()">
+    <div class="modal-sheet" id="modal-sheet"></div>
+  </div>
+
+  <div class="toast" id="toast" style="display:none;"></div>
+
+</div>
+
+<script>
+/* ===================== STATE ===================== */
+let authMode = 'login';
+let userEmail = '';
+
+const CATS = ['Tất cả','Học tập','Đời sống','Ăn uống','Giải trí','Kinh nghiệm'];
+let forumFilter = 'Tất cả';
+
+let forumPosts = [
+  {id:1, cat:'Học tập', author:'Minh Anh', anon:false, text:'Có ai học chung môn Nguyên lý kế toán ca sáng thứ 3 không, lập nhóm ôn thi với!', likes:8, liked:false, bookmarked:false, reports:0, time:'2 giờ trước', comments:[{who:'Gia Bảo', text:'Mình nè, nhắn tin nhóm nha'}]},
+  {id:2, cat:'Ăn uống', author:'Ẩn danh', anon:true, text:'Quán cơm tấm hẻm 54 Nguyễn Đình Chiểu ngon mà rẻ, sinh viên nên thử.', likes:22, liked:false, bookmarked:false, reports:0, time:'4 giờ trước', comments:[]},
+  {id:3, cat:'Đời sống', author:'Thảo Vy', anon:false, text:'Tháng đầu ở KTX hơi khó ngủ vì lạ chỗ, mọi người có tips gì không?', likes:5, liked:false, bookmarked:false, reports:0, time:'6 giờ trước', comments:[]},
+];
+
+let activities = [
+  {id:1, title:'Đi ăn lẩu cổng sau', place:'Lẩu Phan, cổng B', time:'18h thứ 7', spots:4, filled:2, cost:'~120k/người', joined:false, creator:'Đăng Khoa'},
+  {id:2, title:'Order trà sữa chung', place:'Nhận tại sảnh B1', time:'Chiều nay 15h', spots:5, filled:4, cost:'~35k/người', joined:false, creator:'Ngọc Hân'},
+];
+
+let confessions = [
+  {id:1, text:'Góc yên tĩnh ở thư viện tầng 3 ít ai biết, học buổi chiều mát lắm.', hearts:14, hearted:false, reports:0, flagged:false},
+  {id:2, text:'Vào trường 2 tháng rồi chưa quen ai trong lớp, hơi buồn.', hearts:31, hearted:false, reports:0, flagged:false},
+];
+
+let challenges = [
+  {id:1, title:'Khám phá 3 quán ăn mới quanh trường', desc:'Ghé và đánh dấu 3 địa điểm bạn chưa từng thử.', points:30, progress:0, joined:false, badge:'Người khám phá'},
+  {id:2, title:'Kết bạn qua 1 kèo Đi cùng nhau', desc:'Tham gia hoặc tạo 1 kèo và có mặt.', points:20, progress:0, joined:false, badge:'Bạn đồng hành'},
+  {id:3, title:'Đăng 3 bài trên Forum', desc:'Chia sẻ, đặt câu hỏi hoặc trả lời trên diễn đàn.', points:15, progress:0, joined:false, badge:'Cây bút cộng đồng'},
+];
+
+let notifications = [
+  {text:'Gia Bảo đã bình luận bài viết của bạn', time:'10 phút trước', read:false},
+  {text:'Kèo "Đi ăn lẩu cổng sau" sắp diễn ra trong 2 giờ', time:'1 giờ trước', read:false},
+  {text:'Bạn nhận được 5 lượt tim cho confession vừa đăng', time:'3 giờ trước', read:false},
+  {text:'Còn 1 slot trong kèo "Order trà sữa chung"', time:'5 giờ trước', read:true},
+];
+
+let leaderboard = [
+  {name:'Đăng Khoa', pts:180}, {name:'Ngọc Hân', pts:150}, {name:'Minh Anh', pts:95}, {name:'Thảo Vy', pts:60},
+];
+
+let chatThreads = {}; // activityId -> messages[]
+let userPosts = 0;
+let currentModalActivity = null;
+
+function escapeHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function initials(name){return name.split(' ').filter(Boolean).slice(-2).map(w=>w[0]).join('').toUpperCase();}
+
+/* ===================== AUTH ===================== */
+function toggleAuthMode(){
+  authMode = authMode==='login' ? 'signup' : 'login';
+  document.getElementById('auth-title').textContent = authMode==='login' ? 'Đăng nhập' : 'Tạo tài khoản';
+  document.getElementById('auth-btn').textContent = authMode==='login' ? 'Đăng nhập' : 'Đăng ký';
+  document.querySelector('.auth .switch').innerHTML = authMode==='login'
+    ? 'Chưa có tài khoản? <b onclick="toggleAuthMode()">Đăng ký</b>'
+    : 'Đã có tài khoản? <b onclick="toggleAuthMode()">Đăng nhập</b>';
+}
+function doAuth(){
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value.trim();
+  const err = document.getElementById('auth-error');
+  if(!email || !pass){ err.style.display='block'; return; }
+  err.style.display='none';
+  userEmail = email;
+  document.getElementById('screen-auth').style.display='none';
+  document.getElementById('shell').style.display='flex';
+  document.getElementById('home-greet').textContent = 'Chào ' + email.split('@')[0] + ', hôm nay có gì mới?';
+  document.getElementById('profile-email').textContent = email;
+  document.getElementById('profile-avatar').textContent = initials(email.split('@')[0].replace(/[.\d]/g,' ')) || 'SV';
+  renderAll();
+}
+function logout(){
+  document.getElementById('shell').style.display='none';
+  document.getElementById('screen-auth').style.display='flex';
+  document.getElementById('auth-email').value='';
+  document.getElementById('auth-pass').value='';
+}
+
+/* ===================== TABS ===================== */
+function switchTab(name){
+  document.querySelectorAll('.tabscreen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('#bottom-nav button').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.getElementById('main-content').scrollTop = 0;
+}
+
+/* ===================== SEARCH ===================== */
+function toggleSearch(){
+  document.getElementById('searchbar').classList.toggle('open');
+}
+function doSearch(q){
+  if(!q.trim()){ return; }
+}
+document.addEventListener('DOMContentLoaded', ()=>{});
+function openOverlay(id){ document.getElementById(id).style.display='flex'; }
+function closeOverlay(id){ document.getElementById(id).style.display='none'; }
+
+function runFullSearch(q){
+  const query=q.toLowerCase();
+  let out=[];
+  forumPosts.filter(p=>p.text.toLowerCase().includes(query)).forEach(p=>out.push({type:'Forum', text:p.text, action:()=>{closeOverlay('overlay-search');switchTab('forum');}}));
+  activities.filter(a=>a.title.toLowerCase().includes(query)||a.place.toLowerCase().includes(query)).forEach(a=>out.push({type:'Đi cùng nhau', text:a.title+' · '+a.place, action:()=>{closeOverlay('overlay-search');switchTab('activities');}}));
+  confessions.filter(c=>c.text.toLowerCase().includes(query)).forEach(c=>out.push({type:'Confession', text:c.text, action:()=>{closeOverlay('overlay-search');switchTab('confession');}}));
+  const box=document.getElementById('search-results');
+  if(!query.trim()){ box.innerHTML='<div class="empty">Gõ từ khóa để tìm bài viết, kèo hoặc confession.</div>'; return; }
+  if(out.length===0){ box.innerHTML='<div class="empty">Không tìm thấy kết quả phù hợp.</div>'; return; }
+  window.__searchResults = out;
+  box.innerHTML = out.map((r,i)=>`
+    <div class="card" onclick="window.__searchResults[${i}].action()" style="cursor:pointer;">
+      <span class="tag-pill navy" style="margin-bottom:6px;display:inline-block;">${r.type}</span>
+      <p class="body">${escapeHtml(r.text)}</p>
+    </div>`).join('');
+}
+document.getElementById('search-input').addEventListener('input', function(){
+  if(this.value.trim()){ openOverlay('overlay-search'); }
+  runFullSearch(this.value);
+});
+
+/* ===================== NOTIFICATIONS ===================== */
+function openNotif(){
+  openOverlay('overlay-notif');
+  renderNotif();
+}
+function markRead(i){ notifications[i].read=true; renderNotif(); updateNotifDot(); }
+function renderNotif(){
+  document.getElementById('notif-list').innerHTML = notifications.map((n,i)=>`
+    <div class="notif-item" onclick="markRead(${i})" style="cursor:pointer;">
+      <div class="n-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>
+      <div style="flex:1;">
+        <p>${escapeHtml(n.text)}</p>
+        <p class="n-time">${n.time}</p>
+      </div>
+      ${n.read ? '' : '<div class="n-dot"></div>'}
+    </div>`).join('');
+  updateNotifDot();
+}
+function updateNotifDot(){
+  document.getElementById('notif-dot').style.display = notifications.some(n=>!n.read) ? 'block' : 'none';
+}
+
+/* ===================== TOAST ===================== */
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{t.style.display='none';},2200);
+}
+
+/* ===================== MODAL ===================== */
+function openModal(html){
+  document.getElementById('modal-sheet').innerHTML = html;
+  document.getElementById('modal-back').style.display='flex';
+}
+function closeModal(){ document.getElementById('modal-back').style.display='none'; currentModalActivity=null; }
+
+function openChat(actId){
+  currentModalActivity = actId;
+  if(!chatThreads[actId]) chatThreads[actId] = [
+    {who: activities.find(a=>a.id===actId).creator, me:false, text:'Chào mọi người, mình lên đường lúc đúng giờ nha!'},
+  ];
+  renderChatModal();
+}
+function renderChatModal(){
+  const act = activities.find(a=>a.id===currentModalActivity);
+  const msgs = chatThreads[currentModalActivity];
+  openModal(`
+    <div class="m-head"><b>Trò chuyện · ${escapeHtml(act.title)}</b><button class="backbtn" onclick="closeModal()">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+    </button></div>
+    <div class="m-body" id="chat-body">
+      ${msgs.map(m=>`<div class="chat-msg ${m.me?'me':''}"><div class="m-who">${escapeHtml(m.who)}</div><div class="m-bub">${escapeHtml(m.text)}</div></div>`).join('')}
+    </div>
+    <div class="chat-input-row">
+      <input id="chat-input" placeholder="Nhắn gì đó..." onkeydown="if(event.key==='Enter') sendChat();" />
+      <button class="btn-primary" onclick="sendChat()">Gửi</button>
+    </div>
+  `);
+  const body=document.getElementById('chat-body');
+  body.scrollTop = body.scrollHeight;
+}
+function sendChat(){
+  const input = document.getElementById('chat-input');
+  if(!input.value.trim()) return;
+  chatThreads[currentModalActivity].push({who:'Bạn', me:true, text:input.value.trim()});
+  input.value='';
+  renderChatModal();
+}
+
+function confirmReport(kind, id){
+  openModal(`
+    <div class="m-head"><b>Báo cáo nội dung</b></div>
+    <p style="font-size:13px;color:var(--text-secondary);margin:0 0 14px;">Bạn muốn báo cáo nội dung này vì vi phạm quy tắc cộng đồng?</p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-ghost" style="flex:1;" onclick="closeModal()">Hủy</button>
+      <button class="btn-primary" style="flex:1;background:var(--danger);" onclick="doReport('${kind}',${id})">Báo cáo</button>
+    </div>
+  `);
+}
+function doReport(kind, id){
+  if(kind==='forum'){
+    const p = forumPosts.find(x=>x.id===id); p.reports++;
+    if(p.reports>=3) { showToast('Bài viết đã bị gắn cờ, đang chờ kiểm duyệt.'); } else { showToast('Đã gửi báo cáo, cảm ơn bạn.'); }
+    renderForum();
+  } else {
+    const c = confessions.find(x=>x.id===id); c.reports++;
+    if(c.reports>=3){ c.flagged=true; showToast('Nội dung đã bị gắn cờ, đang chờ kiểm duyệt.'); } else { showToast('Đã gửi báo cáo, cảm ơn bạn.'); }
+    renderConfession();
+  }
+  closeModal();
+}
+
+/* ===================== HOME ===================== */
+function renderHome(){
+  document.getElementById('home-forum').innerHTML = forumPosts.slice(0,4).map(p=>`
+    <div class="hcard" onclick="switchTab('forum')">
+      <span class="tag-pill navy tag">${p.cat}</span>
+      <p>${escapeHtml(p.text.slice(0,60))}${p.text.length>60?'…':''}</p>
+      <p class="meta">${p.anon?'Ẩn danh':p.author} · ${p.time}</p>
+    </div>`).join('') || '<div class="empty">Chưa có bài viết</div>';
+
+  document.getElementById('home-activities').innerHTML = activities.map(a=>`
+    <div class="hcard" onclick="switchTab('activities')">
+      <span class="tag-pill gold tag">Còn ${a.spots-a.filled} chỗ</span>
+      <p>${escapeHtml(a.title)}</p>
+      <p class="meta">${a.place} · ${a.time}</p>
+    </div>`).join('') || '<div class="empty">Chưa có kèo</div>';
+
+  document.getElementById('home-confession').innerHTML = [...confessions].sort((a,b)=>b.hearts-a.hearts).slice(0,4).map(c=>`
+    <div class="hcard" onclick="switchTab('confession')">
+      <span class="tag-pill rose tag">Ẩn danh</span>
+      <p>${escapeHtml(c.text.slice(0,60))}${c.text.length>60?'…':''}</p>
+      <p class="meta">${c.hearts} lượt tim</p>
+    </div>`).join('') || '<div class="empty">Chưa có confession</div>';
+
+  document.getElementById('home-challenge').innerHTML = challenges.map(ch=>`
+    <div class="hcard" onclick="switchTab('challenge')">
+      <span class="tag-pill mint tag">${ch.points} điểm</span>
+      <p>${escapeHtml(ch.title)}</p>
+      <p class="meta">${ch.progress}% hoàn thành</p>
+    </div>`).join('');
+}
+
+/* ===================== FORUM ===================== */
+function renderForumChips(){
+  document.getElementById('forum-chips').innerHTML = CATS.map(c=>`
+    <button class="chip ${c===forumFilter?'active':''}" onclick="setForumFilter('${c}')">${c}</button>`).join('');
+}
+function setForumFilter(c){ forumFilter=c; renderForumChips(); renderForum(); }
+function renderForum(){
+  renderForumChips();
+  const list = forumPosts.filter(p => forumFilter==='Tất cả' || p.cat===forumFilter);
+  const box = document.getElementById('forum-list');
+  if(list.length===0){ box.innerHTML='<div class="empty">Chưa có bài viết trong mục này.</div>'; return; }
+  box.innerHTML = list.map(p=>`
+    <div class="card ${p.reports>=3?'flagged':''}">
+      ${p.reports>=3?'<p class="flag-note">⚑ Nội dung đang được kiểm duyệt do có báo cáo</p>':''}
+      <div class="ph">
+        <div class="avatar ${p.anon?'anon':''}">${p.anon?'?':initials(p.author)}</div>
+        <div style="flex:1;">
+          <p class="who">${p.anon?'Ẩn danh':escapeHtml(p.author)}</p>
+          <p class="meta">${p.time}</p>
+        </div>
+        <span class="tag-pill navy">${p.cat}</span>
+      </div>
+      <p class="body">${escapeHtml(p.text)}</p>
+      <div class="actions">
+        <button class="aicon ${p.liked?'on':''}" onclick="toggleLike(${p.id})">
+          <svg viewBox="0 0 24 24" fill="${p.liked?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>${p.likes}
+        </button>
+        <button class="aicon" onclick="toggleComments(${p.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.38 8.5 8.5 0 0 1-4-1L3 20l1.1-5.5A8.4 8.4 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3a8.5 8.5 0 0 1 9.5 8.5Z"/></svg>${p.comments.length}
+        </button>
+        <button class="aicon ${p.bookmarked?'on':''}" onclick="toggleBookmark(${p.id})">
+          <svg viewBox="0 0 24 24" fill="${p.bookmarked?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/></svg>
+        </button>
+        <button class="aicon spacer" onclick="confirmReport('forum',${p.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg>
+        </button>
+      </div>
+      <div class="cbox" id="cbox-${p.id}" style="display:none;">
+        ${p.comments.map(c=>`<p class="citem"><b>${escapeHtml(c.who)}:</b> ${escapeHtml(c.text)}</p>`).join('') || '<p class="citem" style="color:var(--text-muted);">Chưa có bình luận.</p>'}
+        <div class="crow">
+          <input id="cin-${p.id}" placeholder="Viết bình luận..." onkeydown="if(event.key==='Enter') addComment(${p.id})"/>
+          <button class="btn-ghost" onclick="addComment(${p.id})">Gửi</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggleLike(id){ const p=forumPosts.find(x=>x.id===id); p.liked=!p.liked; p.likes += p.liked?1:-1; renderForum(); renderHome(); }
+function toggleBookmark(id){ const p=forumPosts.find(x=>x.id===id); p.bookmarked=!p.bookmarked; renderForum(); renderProfile(); }
+function toggleComments(id){ const el=document.getElementById('cbox-'+id); el.style.display = el.style.display==='none' ? 'block' : 'none'; }
+function addComment(id){
+  const input=document.getElementById('cin-'+id);
+  if(!input.value.trim()) return;
+  forumPosts.find(x=>x.id===id).comments.push({who:'Bạn', text:input.value.trim()});
+  input.value='';
+  renderForum();
+  document.getElementById('cbox-'+id).style.display='block';
+}
+function postForum(){
+  const text=document.getElementById('forum-text');
+  const err=document.getElementById('forum-error');
+  if(!text.value.trim()){ err.style.display='block'; return; }
+  err.style.display='none';
+  const anon=document.getElementById('forum-anon').checked;
+  forumPosts.unshift({id:Date.now(), cat:document.getElementById('forum-cat').value, author:'Bạn', anon:anon, text:text.value.trim(), likes:0, liked:false, bookmarked:false, reports:0, time:'vừa xong', comments:[]});
+  text.value=''; document.getElementById('forum-anon').checked=false;
+  userPosts++;
+  bumpChallenge('post');
+  renderForum(); renderHome(); renderProfile();
+  showToast('Đã đăng bài lên Forum.');
+}
+
+/* ===================== ACTIVITIES ===================== */
+function renderActivities(){
+  const box=document.getElementById('activities-list');
+  if(activities.length===0){ box.innerHTML='<div class="empty">Chưa có kèo nào, tạo kèo đầu tiên nhé.</div>'; return; }
+  box.innerHTML = activities.map(a=>{
+    const pct = Math.min(100, Math.round(a.filled/a.spots*100));
+    return `
+    <div class="card">
+      <div class="ph"><div class="avatar">${initials(a.creator)}</div><div style="flex:1;"><p class="who">${escapeHtml(a.title)}</p><p class="meta">bởi ${escapeHtml(a.creator)}</p></div><span class="tag-pill gold">${escapeHtml(a.cost||'—')}</span></div>
+      <p class="body">${escapeHtml(a.place)} · ${escapeHtml(a.time)}</p>
+      <div class="prog-wrap"><div class="prog-fill" style="width:${pct}%;"></div></div>
+      <div class="actions">
+        <span class="meta">${a.filled}/${a.spots} người</span>
+        <span class="aicon spacer"></span>
+        ${a.joined ? `<button class="btn-ghost" onclick="openChat(${a.id})">Nhắn tin</button>` : `<button class="btn-primary" onclick="joinActivity(${a.id})">Tham gia</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+function joinActivity(id){
+  const a=activities.find(x=>x.id===id);
+  if(a.joined) return;
+  a.joined=true;
+  a.filled = Math.min(a.spots, a.filled+1);
+  bumpChallenge('activity');
+  renderActivities(); renderHome(); renderProfile();
+  showToast('Đã tham gia kèo "'+a.title+'".');
+}
+function postActivity(){
+  const title=document.getElementById('act-title'), spots=document.getElementById('act-spots');
+  const err=document.getElementById('act-error');
+  if(!title.value.trim() || !spots.value){ err.style.display='block'; return; }
+  err.style.display='none';
+  activities.unshift({id:Date.now(), title:title.value.trim(), place:document.getElementById('act-place').value.trim()||'Chưa rõ địa điểm', time:document.getElementById('act-time').value.trim()||'Chưa rõ thời gian', spots:parseInt(spots.value), filled:1, cost:document.getElementById('act-cost').value.trim(), joined:true, creator:'Bạn'});
+  title.value=''; document.getElementById('act-place').value=''; document.getElementById('act-time').value=''; spots.value=''; document.getElementById('act-cost').value='';
+  renderActivities(); renderHome();
+  showToast('Đã tạo kèo mới.');
+}
+
+/* ===================== CONFESSION ===================== */
+function renderConfession(){
+  const box=document.getElementById('confession-list');
+  if(confessions.length===0){ box.innerHTML='<div class="empty">Chưa có chia sẻ nào.</div>'; return; }
+  box.innerHTML = confessions.map(c=>`
+    <div class="card ${c.flagged?'flagged':''}">
+      ${c.flagged?'<p class="flag-note">⚑ Nội dung đang được kiểm duyệt do có báo cáo</p>':''}
+      <span class="tag-pill rose" style="margin-bottom:7px;display:inline-block;">Ẩn danh</span>
+      <p class="body">${c.flagged ? 'Nội dung tạm ẩn trong lúc chờ kiểm duyệt.' : escapeHtml(c.text)}</p>
+      <div class="actions">
+        <button class="aicon ${c.hearted?'on':''}" onclick="toggleHeart(${c.id})">
+          <svg viewBox="0 0 24 24" fill="${c.hearted?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>${c.hearts}
+        </button>
+        <button class="aicon spacer" onclick="confirmReport('confession',${c.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg>
+        </button>
+      </div>
+    </div>`).join('');
+}
+function toggleHeart(id){ const c=confessions.find(x=>x.id===id); c.hearted=!c.hearted; c.hearts += c.hearted?1:-1; renderConfession(); renderHome(); }
+function postConfession(){
+  const text=document.getElementById('conf-text');
+  const err=document.getElementById('conf-error');
+  if(!text.value.trim()){ err.style.display='block'; return; }
+  err.style.display='none';
+  confessions.unshift({id:Date.now(), text:text.value.trim(), hearts:0, hearted:false, reports:0, flagged:false});
+  text.value='';
+  renderConfession(); renderHome();
+  showToast('Đã đăng confession ẩn danh.');
+}
+
+/* ===================== CHALLENGE ===================== */
+function renderChallenge(){
+  document.getElementById('challenge-list').innerHTML = challenges.map(ch=>`
+    <div class="card">
+      <div class="ph"><div class="avatar" style="background:var(--mint-soft);color:var(--mint-text);">🏅</div><div style="flex:1;"><p class="who">${escapeHtml(ch.title)}</p><p class="meta">${escapeHtml(ch.desc)}</p></div><span class="tag-pill mint">${ch.points} điểm</span></div>
+      <div class="prog-wrap"><div class="prog-fill" style="width:${ch.progress}%;"></div></div>
+      <div class="actions">
+        <span class="meta">${ch.progress}% hoàn thành</span>
+        <span class="aicon spacer"></span>
+        ${ch.progress>=100 ? '<span class="tag-pill gold">Hoàn thành ✓</span>' :
+          (ch.joined ? `<button class="btn-primary" onclick="bumpChallenge(${ch.id},true)">Cập nhật tiến độ</button>` : `<button class="btn-ghost" onclick="joinChallenge(${ch.id})">Tham gia</button>`)}
+      </div>
+    </div>`).join('');
+}
+function joinChallenge(id){ challenges.find(c=>c.id===id).joined=true; renderChallenge(); showToast('Đã tham gia thử thách.'); }
+function bumpChallenge(arg, manual){
+  if(manual){
+    const ch=challenges.find(c=>c.id===arg);
+    ch.progress = Math.min(100, ch.progress+25);
+    if(ch.progress>=100){ showToast('🎉 Bạn nhận huy hiệu: '+ch.badge); }
+    renderChallenge(); renderHome(); renderProfile();
+    return;
+  }
+  // auto-progress triggers from forum post / activity join
+  challenges.forEach(ch=>{
+    if(arg==='post' && ch.title.includes('Forum') && ch.progress<100){ ch.progress=Math.min(100, ch.progress+34); ch.joined=true; }
+    if(arg==='activity' && ch.title.includes('Đi cùng nhau') && ch.progress<100){ ch.progress=100; ch.joined=true; }
+  });
+  renderChallenge();
+}
+
+function openLeaderboard(){
+  openOverlay('overlay-lb');
+  const myPts = totalPoints();
+  let all = [...leaderboard, {name:'Bạn', pts:myPts, me:true}].sort((a,b)=>b.pts-a.pts);
+  document.getElementById('lb-list').innerHTML = all.map((u,i)=>`
+    <div class="lb-row ${u.me?'me':''}"><span class="rank">${i+1}</span><span class="lname">${escapeHtml(u.name)}</span><span class="lpts">${u.pts} đ</span></div>
+  `).join('');
+}
+function totalPoints(){
+  return challenges.reduce((sum,ch)=> sum + Math.round(ch.points * ch.progress/100), 0);
+}
+
+/* ===================== PROFILE ===================== */
+function renderProfile(){
+  document.getElementById('stat-points').textContent = totalPoints();
+  document.getElementById('stat-joined').textContent = activities.filter(a=>a.joined).length;
+  document.getElementById('stat-posts').textContent = userPosts;
+  const badges = challenges.filter(c=>c.progress>=100);
+  document.getElementById('profile-badges').innerHTML = badges.length ? badges.map(b=>`<span class="badge-item">🏅 ${escapeHtml(b.badge)}</span>`).join('') : '<div class="empty" style="padding:14px 0;">Chưa có huy hiệu nào, hoàn thành thử thách để nhận nhé.</div>';
+  const marks = forumPosts.filter(p=>p.bookmarked);
+  document.getElementById('profile-bookmarks').innerHTML = marks.length ? marks.map(p=>`<div class="card"><p class="body">${escapeHtml(p.text)}</p></div>`).join('') : '<div class="empty">Chưa lưu bài viết nào.</div>';
+}
+
+/* ===================== INIT ===================== */
+function renderAll(){
+  renderHome(); renderForum(); renderActivities(); renderConfession(); renderChallenge(); renderProfile();
+}
+</script>
+
+</body>
+</html>
