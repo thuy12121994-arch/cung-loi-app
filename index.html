@@ -9,26 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-page:#F6F6FB; --surface:#FFFFFF; --surface-soft:#F1F1F7;
-    --text-primary:#1C1B29; --text-secondary:#67657C; --text-muted:#9D9BAF;
-    --border:rgba(28,27,41,0.10);
-    --navy:#14213D; --navy-soft:#E7EAF3; --navy-text:#14213D;
-    --gold:#F2A825; --gold-soft:#FCEBC7; --gold-text:#8A5A05;
-    --mint:#2FA88A; --mint-soft:#DBF2EC; --mint-text:#1F6E5B;
-    --rose:#E0577B; --rose-soft:#FBE3EA; --rose-text:#A13A57;
-    --danger:#D64545;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg-page:#15151C; --surface:#1E1E27; --surface-soft:#26262F;
-      --text-primary:#F2F1F7; --text-secondary:#AEACC0; --text-muted:#7C7A8F;
-      --border:rgba(255,255,255,0.10);
-      --navy:#8DA0D6; --navy-soft:rgba(141,160,214,0.16); --navy-text:#AEBDE6;
-      --gold:#F2C066; --gold-soft:rgba(242,168,37,0.16); --gold-text:#F2C066;
-      --mint:#63C9AC; --mint-soft:rgba(47,168,138,0.18); --mint-text:#7FDBC0;
-      --rose:#E888A2; --rose-soft:rgba(224,87,123,0.16); --rose-text:#E888A2;
-      --danger:#E0837C;
-    }
+    --bg-page:#FFFBF5; --surface:#FFFFFF; --surface-soft:#FFF3E8;
+    --text-primary:#2B2A33; --text-secondary:#726F80; --text-muted:#A6A3B5;
+    --border:rgba(43,42,51,0.10);
+    --navy:#2F86EB; --navy-soft:#DCEBFF; --navy-text:#1857A8;
+    --gold:#FFA726; --gold-soft:#FFEACB; --gold-text:#B5680A;
+    --mint:#2ECC71; --mint-soft:#DFF7E6; --mint-text:#1E8449;
+    --rose:#FF6F91; --rose-soft:#FFE3EA; --rose-text:#C23A5A;
+    --danger:#E5484D;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg-page);font-family:'Inter',-apple-system,sans-serif;color:var(--text-primary);display:flex;justify-content:center;padding:28px 14px;min-height:100vh;}
@@ -43,6 +31,10 @@
   .field{margin-bottom:12px;}
   .field label{font-size:12px;color:var(--text-secondary);display:block;margin-bottom:5px;}
   .field input{width:100%;font-family:inherit;font-size:14px;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface-soft);color:var(--text-primary);}
+  .email-combo{display:flex;align-items:stretch;border-radius:10px;border:1px solid var(--border);background:var(--surface-soft);overflow:hidden;}
+  .email-combo input{flex:1;min-width:0;border:none;background:transparent;padding:11px 0 11px 12px;font-family:inherit;font-size:14px;color:var(--text-primary);}
+  .email-combo input:focus{outline:none;}
+  .email-combo .email-suffix{flex-shrink:0;display:flex;align-items:center;padding:0 12px 0 4px;font-size:13px;color:var(--text-muted);white-space:nowrap;background:var(--surface-soft);}
   .err{font-size:12px;color:var(--danger);margin:-4px 0 10px;}
   .btn-block{width:100%;background:var(--navy);color:#fff;font-size:14px;font-weight:600;padding:12px;border-radius:10px;border:none;font-family:inherit;cursor:pointer;margin-top:6px;}
   .auth .switch{text-align:center;font-size:13px;color:var(--text-secondary);margin-top:18px;}
@@ -178,7 +170,10 @@
     <p class="sub">Kết nối sinh viên UEH — trò chuyện, tìm bạn đồng hành, khám phá quanh trường.</p>
     <div class="field">
       <label>Email</label>
-      <input id="auth-email" placeholder="ten@st.ueh.edu.vn" />
+      <div class="email-combo">
+        <input id="auth-email" placeholder="tenbandangnhap" />
+        <span class="email-suffix">@st.ueh.edu.vn</span>
+      </div>
     </div>
     <div class="field">
       <label>Mật khẩu</label>
@@ -379,25 +374,29 @@ const CATS = ['Tất cả','Học tập','Đời sống','Ăn uống','Giải tr
 let forumFilter = 'Tất cả';
 
 let forumPosts = [
-  {id:1, cat:'Học tập', author:'Minh Anh', anon:false, text:'Có ai học chung môn Nguyên lý kế toán ca sáng thứ 3 không, lập nhóm ôn thi với!', likes:8, liked:false, bookmarked:false, reports:0, time:'2 giờ trước', comments:[{who:'Gia Bảo', text:'Mình nè, nhắn tin nhóm nha'}]},
-  {id:2, cat:'Ăn uống', author:'Ẩn danh', anon:true, text:'Quán cơm tấm hẻm 54 Nguyễn Đình Chiểu ngon mà rẻ, sinh viên nên thử.', likes:22, liked:false, bookmarked:false, reports:0, time:'4 giờ trước', comments:[]},
-  {id:3, cat:'Đời sống', author:'Thảo Vy', anon:false, text:'Tháng đầu ở KTX hơi khó ngủ vì lạ chỗ, mọi người có tips gì không?', likes:5, liked:false, bookmarked:false, reports:0, time:'6 giờ trước', comments:[]},
+  {id:1, cat:'Học tập', author:'Minh Anh', anon:false, text:'Có ai học chung môn Nguyên lý kế toán ca sáng thứ 3 không, lập nhóm ôn thi với! Mình học ở cơ sở N.', likes:8, liked:false, bookmarked:false, reports:0, time:'2 giờ trước', comments:[{who:'Gia Bảo', text:'Mình nè, nhắn tin nhóm nha'}, {who:'Thảo Vy', text:'Cho mình xin nhóm với, mình cũng học ca đó!'}, {who:'Hoàng Long', text:'Có tài liệu ôn chưa cho mình xin với'}]},
+  {id:2, cat:'Ăn uống', author:'Ẩn danh', anon:true, text:'Có quán cơm tấm trong hẻm nhỏ gần cơ sở B (đường Nguyễn Tri Phương) ngon mà rẻ, sinh viên nên thử.', likes:22, liked:false, bookmarked:false, reports:0, time:'4 giờ trước', comments:[{who:'Ngọc Hân', text:'Đúng rồi, mình ăn hoài, sườn nướng ngon lắm'}, {who:'Minh Anh', text:'Tên quán là gì vậy bạn, cho địa chỉ cụ thể với'}]},
+  {id:3, cat:'Đời sống', author:'Thảo Vy', anon:false, text:'Tháng đầu ở KTX hơi khó ngủ vì lạ chỗ, mọi người có tips gì không?', likes:5, liked:false, bookmarked:false, reports:0, time:'6 giờ trước', comments:[{who:'Gia Bảo', text:'Mang theo gối ôm quen thuộc từ nhà, mình cũng vậy hồi đầu'}, {who:'Ẩn danh', text:'Nghe nhạc không lời nhẹ nhẹ trước khi ngủ cũng đỡ hơn nhiều'}, {who:'Đăng Khoa', text:'Vài tuần là quen à, ráng lên bạn ơi'}]},
+  {id:4, cat:'Ăn uống', author:'Hoàng Long', anon:false, text:'Quán bún đậu trong hẻm đối diện cơ sở B (279 Nguyễn Tri Phương) ngon xuất sắc, giá sinh viên luôn.', likes:17, liked:false, bookmarked:false, reports:0, time:'8 giờ trước', comments:[{who:'Minh Thư', text:'Mắm tôm ở đó đậm vị thiệt sự'}]},
+  {id:5, cat:'Kinh nghiệm', author:'Ẩn danh', anon:true, text:'Ai học ở cơ sở B thì nên gửi xe ở bãi trong hẻm nhỏ gần Nguyễn Tri Phương, rẻ hơn bãi trước cổng nhiều.', likes:11, liked:false, bookmarked:false, reports:0, time:'10 giờ trước', comments:[{who:'Ngọc Hân', text:'Cảm ơn tip, mình gửi trước cổng hoài giờ mới biết'}, {who:'Thảo Vy', text:'Bãi đó có giữ xe qua đêm không bạn?'}]},
 ];
 
 let activities = [
-  {id:1, title:'Đi ăn lẩu cổng sau', place:'Lẩu Phan, cổng B', time:'18h thứ 7', spots:4, filled:2, cost:'~120k/người', joined:false, creator:'Đăng Khoa'},
-  {id:2, title:'Order trà sữa chung', place:'Nhận tại sảnh B1', time:'Chiều nay 15h', spots:5, filled:4, cost:'~35k/người', joined:false, creator:'Ngọc Hân'},
+  {id:1, title:'Đi ăn lẩu gần cơ sở B', place:'Lẩu Phan, 279 Nguyễn Tri Phương', time:'18h thứ 7', spots:4, filled:2, cost:'~120k/người', joined:false, creator:'Đăng Khoa'},
+  {id:2, title:'Order trà sữa chung', place:'Nhận tại sảnh B1, cơ sở B', time:'Chiều nay 15h', spots:5, filled:4, cost:'~35k/người', joined:false, creator:'Ngọc Hân'},
+  {id:3, title:'Cà phê ôn thi cuối kỳ', place:'Quán cà phê gần cơ sở N (Nguyễn Văn Linh)', time:'19h thứ 4', spots:6, filled:3, cost:'~50k/người', joined:false, creator:'Minh Thư'},
 ];
 
 let confessions = [
-  {id:1, text:'Góc yên tĩnh ở thư viện tầng 3 ít ai biết, học buổi chiều mát lắm.', hearts:14, hearted:false, reports:0, flagged:false},
+  {id:1, text:'Góc yên tĩnh ở thư viện cơ sở N tầng 3 ít ai biết, học buổi chiều mát lắm.', hearts:14, hearted:false, reports:0, flagged:false},
   {id:2, text:'Vào trường 2 tháng rồi chưa quen ai trong lớp, hơi buồn.', hearts:31, hearted:false, reports:0, flagged:false},
+  {id:3, text:'Căn tin cơ sở B buổi trưa đông kinh khủng, nên đi ăn trước 11h hoặc sau 12h30 là vắng hẳn.', hearts:19, hearted:false, reports:0, flagged:false},
 ];
 
 let challenges = [
-  {id:1, title:'Khám phá 3 quán ăn mới quanh trường', desc:'Ghé và đánh dấu 3 địa điểm bạn chưa từng thử.', points:30, progress:0, joined:false, badge:'Người khám phá'},
-  {id:2, title:'Kết bạn qua 1 kèo Đi cùng nhau', desc:'Tham gia hoặc tạo 1 kèo và có mặt.', points:20, progress:0, joined:false, badge:'Bạn đồng hành'},
-  {id:3, title:'Đăng 3 bài trên Forum', desc:'Chia sẻ, đặt câu hỏi hoặc trả lời trên diễn đàn.', points:15, progress:0, joined:false, badge:'Cây bút cộng đồng'},
+  {id:1, title:'Khám phá 3 quán ăn mới quanh trường', desc:'Ghé và gửi ảnh minh chứng tại 3 địa điểm bạn chưa từng thử.', points:30, progress:0, joined:false, badge:'Người khám phá', verify:'photo', proofs:[]},
+  {id:2, title:'Kết bạn qua 1 kèo Đi cùng nhau', desc:'Tham gia hoặc tạo 1 kèo và có mặt — tự động ghi nhận khi bạn bấm Tham gia thật.', points:20, progress:0, joined:false, badge:'Bạn đồng hành', verify:'auto'},
+  {id:3, title:'Đăng 3 bài trên Forum', desc:'Chia sẻ, đặt câu hỏi hoặc trả lời trên diễn đàn — tự động ghi nhận theo số bài bạn đăng thật.', points:15, progress:0, joined:false, badge:'Cây bút cộng đồng', verify:'auto'},
 ];
 
 let notifications = [
@@ -428,17 +427,18 @@ function toggleAuthMode(){
     : 'Đã có tài khoản? <b onclick="toggleAuthMode()">Đăng nhập</b>';
 }
 function doAuth(){
-  const email = document.getElementById('auth-email').value.trim();
+  const namePart = document.getElementById('auth-email').value.trim();
   const pass = document.getElementById('auth-pass').value.trim();
   const err = document.getElementById('auth-error');
-  if(!email || !pass){ err.style.display='block'; return; }
+  if(!namePart || !pass){ err.style.display='block'; return; }
   err.style.display='none';
+  const email = namePart + '@st.ueh.edu.vn';
   userEmail = email;
   document.getElementById('screen-auth').style.display='none';
   document.getElementById('shell').style.display='flex';
-  document.getElementById('home-greet').textContent = 'Chào ' + email.split('@')[0] + ', hôm nay có gì mới?';
+  document.getElementById('home-greet').textContent = 'Chào ' + namePart + ', hôm nay có gì mới?';
   document.getElementById('profile-email').textContent = email;
-  document.getElementById('profile-avatar').textContent = initials(email.split('@')[0].replace(/[.\d]/g,' ')) || 'SV';
+  document.getElementById('profile-avatar').textContent = initials(namePart.replace(/[.\d]/g,' ')) || 'SV';
   renderAll();
 }
 function logout(){
@@ -756,33 +756,89 @@ function postConfession(){
 
 /* ===================== CHALLENGE ===================== */
 function renderChallenge(){
-  document.getElementById('challenge-list').innerHTML = challenges.map(ch=>`
+  document.getElementById('challenge-list').innerHTML = challenges.map(ch=>{
+    let actionHtml;
+    if(ch.progress>=100){
+      actionHtml = '<span class="tag-pill gold">Hoàn thành ✓</span>';
+    } else if(!ch.joined){
+      actionHtml = `<button class="btn-ghost" onclick="joinChallenge(${ch.id})">Tham gia</button>`;
+    } else if(ch.verify === 'photo'){
+      actionHtml = `<button class="btn-primary" onclick="openProofUpload(${ch.id})">Gửi minh chứng</button>`;
+    } else {
+      actionHtml = `<span class="meta" style="font-style:italic;">Tự động cập nhật khi bạn thực hiện</span>`;
+    }
+    const proofRow = (ch.proofs && ch.proofs.length) ? `
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        ${ch.proofs.map(src=>`<img src="${src}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;border:1px solid var(--border);" />`).join('')}
+      </div>` : '';
+    return `
     <div class="card">
       <div class="ph"><div class="avatar" style="background:var(--mint-soft);color:var(--mint-text);">🏅</div><div style="flex:1;"><p class="who">${escapeHtml(ch.title)}</p><p class="meta">${escapeHtml(ch.desc)}</p></div><span class="tag-pill mint">${ch.points} điểm</span></div>
       <div class="prog-wrap"><div class="prog-fill" style="width:${ch.progress}%;"></div></div>
+      ${proofRow}
       <div class="actions">
         <span class="meta">${ch.progress}% hoàn thành</span>
         <span class="aicon spacer"></span>
-        ${ch.progress>=100 ? '<span class="tag-pill gold">Hoàn thành ✓</span>' :
-          (ch.joined ? `<button class="btn-primary" onclick="bumpChallenge(${ch.id},true)">Cập nhật tiến độ</button>` : `<button class="btn-ghost" onclick="joinChallenge(${ch.id})">Tham gia</button>`)}
+        ${actionHtml}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function joinChallenge(id){ challenges.find(c=>c.id===id).joined=true; renderChallenge(); showToast('Đã tham gia thử thách.'); }
-function bumpChallenge(arg, manual){
-  if(manual){
-    const ch=challenges.find(c=>c.id===arg);
-    ch.progress = Math.min(100, ch.progress+25);
-    if(ch.progress>=100){ showToast('🎉 Bạn nhận huy hiệu: '+ch.badge); }
+
+function openProofUpload(id){
+  currentModalActivity = null;
+  openModal(`
+    <div class="m-head"><b>Gửi ảnh minh chứng</b><button class="backbtn" onclick="closeModal()">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+    </button></div>
+    <p style="font-size:13px;color:var(--text-secondary);margin:0 0 12px;">Chụp hoặc chọn 1 ảnh tại địa điểm bạn vừa khám phá để xác nhận bạn đã thực sự ghé qua — không tính nếu chỉ bấm suông.</p>
+    <input type="file" id="proof-file" accept="image/*" capture="environment" style="margin-bottom:12px;" />
+    <p class="err" id="proof-error" style="display:none;">Chọn 1 ảnh trước khi gửi nhé.</p>
+    <button class="btn-primary" style="width:100%;" onclick="submitProof(${id})">Gửi minh chứng</button>
+  `);
+}
+function submitProof(id){
+  const input = document.getElementById('proof-file');
+  const err = document.getElementById('proof-error');
+  if(!input.files || !input.files[0]){ err.style.display='block'; return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const ch = challenges.find(c=>c.id===id);
+    if(!ch.proofs) ch.proofs = [];
+    ch.proofs.push(e.target.result);
+    ch.progress = Math.min(100, ch.progress + Math.ceil(100/3));
+    closeModal();
     renderChallenge(); renderHome(); renderProfile();
-    return;
-  }
-  // auto-progress triggers from forum post / activity join
+    if(ch.progress>=100){ celebrateBadge(ch.badge); } else { showToast('Đã ghi nhận minh chứng ' + ch.proofs.length + '/3.'); }
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function celebrateBadge(badgeName){
+  openModal(`
+    <div style="text-align:center;padding:10px 4px 6px;">
+      <div style="font-size:44px;margin-bottom:8px;">🏅</div>
+      <p style="font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin:0 0 6px;">Chúc mừng!</p>
+      <p style="font-size:13.5px;color:var(--text-secondary);margin:0 0 18px;">Bạn vừa hoàn thành thử thách và nhận huy hiệu <b style="color:var(--text-primary);">${escapeHtml(badgeName)}</b>. Huy hiệu đã được lưu vào trang Profile của bạn.</p>
+      <button class="btn-primary" style="width:100%;" onclick="closeModal()">Tuyệt vời</button>
+    </div>
+  `);
+}
+
+function bumpChallenge(arg){
+  // auto-progress triggers from forum post / activity join — no manual/free tap allowed
   challenges.forEach(ch=>{
-    if(arg==='post' && ch.title.includes('Forum') && ch.progress<100){ ch.progress=Math.min(100, ch.progress+34); ch.joined=true; }
-    if(arg==='activity' && ch.title.includes('Đi cùng nhau') && ch.progress<100){ ch.progress=100; ch.joined=true; }
+    if(arg==='post' && ch.title.includes('Forum') && ch.progress<100){
+      ch.progress=Math.min(100, ch.progress+34); ch.joined=true;
+      if(ch.progress>=100) celebrateBadge(ch.badge);
+    }
+    if(arg==='activity' && ch.title.includes('Đi cùng nhau') && ch.progress<100){
+      ch.progress=100; ch.joined=true;
+      celebrateBadge(ch.badge);
+    }
   });
-  renderChallenge();
+  renderChallenge(); renderHome(); renderProfile();
 }
 
 function openLeaderboard(){
