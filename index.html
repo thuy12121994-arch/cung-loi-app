@@ -6,7 +6,7 @@
 <title>UEH Connect</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg-page:#FFFBF5; --surface:#FFFFFF; --surface-soft:#FFF3E8;
@@ -19,15 +19,26 @@
     --danger:#E5484D;
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg-page);font-family:'Inter',-apple-system,sans-serif;color:var(--text-primary);display:flex;justify-content:center;padding:28px 14px;min-height:100vh;}
-  .disp{font-family:'Space Grotesk',sans-serif;}
+  body{margin:0;background:var(--bg-page);font-family:'Be Vietnam Pro',-apple-system,sans-serif;color:var(--text-primary);display:flex;justify-content:center;padding:28px 14px;min-height:100vh;}
+  .disp{font-family:'Baloo 2',sans-serif;}
   .frame{width:390px;max-width:100%;height:800px;background:var(--surface);border-radius:26px;border:1px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,0.14);overflow:hidden;display:flex;flex-direction:column;position:relative;}
 
   /* ===== AUTH ===== */
-  .auth{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 26px;gap:6px;}
-  .auth .mark{width:52px;height:52px;border-radius:14px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:20px;margin-bottom:16px;}
-  .auth h1{font-size:24px;font-weight:700;margin:0 0 4px;}
-  .auth p.sub{font-size:13px;color:var(--text-secondary);margin:0 0 24px;}
+  .auth{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 26px;gap:6px;position:relative;overflow:hidden;}
+  .auth-decor{position:absolute;inset:0;pointer-events:none;z-index:0;}
+  .auth-decor .blob{position:absolute;border-radius:50%;}
+  .auth-decor .b1{width:260px;height:260px;top:-90px;right:-90px;background:radial-gradient(circle at 35% 35%, var(--navy), transparent 72%);opacity:0.16;}
+  .auth-decor .b2{width:190px;height:190px;bottom:70px;left:-80px;background:radial-gradient(circle at 40% 40%, var(--gold), transparent 72%);opacity:0.18;}
+  .auth-decor .b3{width:130px;height:130px;bottom:-40px;right:50px;background:radial-gradient(circle at 40% 40%, var(--mint), transparent 72%);opacity:0.18;}
+  .auth-decor .b4{width:70px;height:70px;top:120px;left:20px;background:radial-gradient(circle at 40% 40%, var(--rose), transparent 72%);opacity:0.14;}
+  .auth-decor svg{position:absolute;bottom:10px;right:-14px;width:190px;height:190px;opacity:0.85;}
+  .auth > *{position:relative;z-index:1;}
+  .auth .eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--gold-soft);color:var(--gold-text);font-size:11px;font-weight:600;padding:5px 11px;border-radius:20px;margin-bottom:16px;width:fit-content;}
+  .auth .mark{width:56px;height:56px;border-radius:17px;background:linear-gradient(145deg, var(--navy), #1f5fc4);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 10px 24px rgba(47,134,235,0.38), 0 0 0 5px var(--navy-soft);}
+  .auth .mark svg{width:27px;height:27px;}
+  .auth h1{font-size:25px;font-weight:700;margin:0 0 4px;letter-spacing:-0.3px;}
+  .auth p.sub{font-size:13px;color:var(--text-secondary);margin:0 0 24px;line-height:1.5;}
+  .auth .credit{position:relative;z-index:1;text-align:center;font-size:11px;color:var(--text-muted);margin-top:26px;}
   .field{margin-bottom:12px;}
   .field label{font-size:12px;color:var(--text-secondary);display:block;margin-bottom:5px;}
   .field input{width:100%;font-family:inherit;font-size:14px;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface-soft);color:var(--text-primary);}
@@ -36,13 +47,13 @@
   .email-combo input:focus{outline:none;}
   .email-combo .email-suffix{flex-shrink:0;display:flex;align-items:center;padding:0 12px 0 4px;font-size:13px;color:var(--text-muted);white-space:nowrap;background:var(--surface-soft);}
   .err{font-size:12px;color:var(--danger);margin:-4px 0 10px;}
-  .btn-block{width:100%;background:var(--navy);color:#fff;font-size:14px;font-weight:600;padding:12px;border-radius:10px;border:none;font-family:inherit;cursor:pointer;margin-top:6px;}
+  .btn-block{width:100%;background:linear-gradient(135deg, var(--navy), #1f5fc4);color:#fff;font-size:14px;font-weight:600;padding:13px;border-radius:11px;border:none;font-family:inherit;cursor:pointer;margin-top:6px;box-shadow:0 8px 18px rgba(47,134,235,0.32);}
   .auth .switch{text-align:center;font-size:13px;color:var(--text-secondary);margin-top:18px;}
   .auth .switch b{color:var(--navy-text);cursor:pointer;}
 
   /* ===== SHELL ===== */
   .topbar{flex-shrink:0;padding:14px 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
-  .topbar .name{font-family:'Space Grotesk';font-weight:700;font-size:16px;flex:1;}
+  .topbar .name{font-family:'Baloo 2';font-weight:700;font-size:16px;flex:1;}
   .icon-btn{position:relative;width:34px;height:34px;border-radius:10px;background:var(--surface-soft);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;color:var(--text-primary);}
   .dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--rose);}
   .searchbar{flex-shrink:0;padding:0 16px;overflow:hidden;max-height:0;transition:max-height .18s;}
@@ -54,15 +65,27 @@
   .tabscreen.active{display:block;}
 
   .greet{font-size:13px;color:var(--text-secondary);margin:0 0 14px;}
-  .sec-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px;}
-  .sec-head:first-child{margin-top:0;}
+  .hero{background:var(--navy);border-radius:18px;padding:18px 18px 16px;margin-bottom:18px;position:relative;overflow:hidden;}
+  .hero::after{content:"";position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.10);}
+  .hero::before{content:"";position:absolute;bottom:-40px;right:30px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.08);}
+  .hero .hi{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#fff;margin:0 0 4px;position:relative;}
+  .hero .sub{font-size:12.5px;color:rgba(255,255,255,0.78);margin:0 0 14px;position:relative;}
+  .hero .dots{display:flex;gap:7px;position:relative;}
+  .hero .dots span{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .sec-head{display:flex;align-items:center;gap:7px;justify-content:space-between;margin:20px 0 11px;}
+  .sec-head:first-of-type{margin-top:0;}
+  .sec-head .sh-left{display:flex;align-items:center;gap:7px;}
+  .sec-head .sh-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
   .sec-head h3{font-size:14px;font-weight:600;margin:0;}
-  .sec-head a{font-size:12px;color:var(--navy-text);cursor:pointer;}
-  .hrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:2px;}
-  .hcard{flex:0 0 148px;background:var(--surface-soft);border-radius:12px;padding:11px;cursor:pointer;}
-  .hcard .tag{font-size:10px;padding:2px 7px;border-radius:20px;display:inline-block;margin-bottom:6px;}
+  .sec-head a{font-size:11.5px;color:var(--navy-text);cursor:pointer;font-weight:500;}
+  .hrow{display:flex;gap:11px;overflow-x:auto;padding:2px 2px 6px;margin:0 -2px;}
+  .hcard{flex:0 0 156px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;cursor:pointer;overflow:hidden;box-shadow:0 1px 3px rgba(20,20,30,0.05);transition:transform .12s;}
+  .hcard:active{transform:scale(0.97);}
+  .hcard .accent{height:4px;width:100%;}
+  .hcard .hc-body{padding:11px;}
+  .hcard .tag{font-size:10px;padding:2px 7px;border-radius:20px;display:inline-block;margin-bottom:7px;}
   .hcard p{font-size:12px;line-height:1.4;margin:0;}
-  .hcard .meta{font-size:10px;color:var(--text-muted);margin-top:6px;}
+  .hcard .meta{font-size:10px;color:var(--text-muted);margin-top:7px;}
 
   .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;}
   .chip{flex-shrink:0;font-size:12px;padding:6px 13px;border-radius:20px;border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;background:var(--surface);}
@@ -149,12 +172,12 @@
   .toast{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:12.5px;padding:9px 16px;border-radius:20px;z-index:40;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,0.2);}
 
   .profile-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-  .profile-head .pavatar{width:52px;height:52px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:600;font-size:18px;}
+  .profile-head .pavatar{width:52px;height:52px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2';font-weight:600;font-size:18px;}
   .profile-head .pname{font-size:15px;font-weight:600;margin:0;}
   .profile-head .pemail{font-size:12px;color:var(--text-secondary);margin:0;}
   .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
   .stat-box{background:var(--surface-soft);border-radius:12px;padding:11px;text-align:center;}
-  .stat-box .num{font-family:'Space Grotesk';font-size:18px;font-weight:600;margin:0;}
+  .stat-box .num{font-family:'Baloo 2';font-size:18px;font-weight:600;margin:0;}
   .stat-box .lbl2{font-size:10.5px;color:var(--text-secondary);margin:2px 0 0;}
   .logout{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--danger);font-size:13px;font-family:inherit;cursor:pointer;margin-top:8px;}
 </style>
@@ -165,7 +188,32 @@
 
   <!-- AUTH -->
   <section class="auth" id="screen-auth">
-    <div class="mark disp">UC</div>
+    <div class="auth-decor">
+      <span class="blob b1"></span>
+      <span class="blob b2"></span>
+      <span class="blob b3"></span>
+      <span class="blob b4"></span>
+      <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="40" y1="150" x2="95" y2="100" stroke="var(--navy)" stroke-width="2.5"/>
+        <line x1="95" y1="100" x2="150" y2="130" stroke="var(--gold)" stroke-width="2.5"/>
+        <line x1="95" y1="100" x2="120" y2="55" stroke="var(--mint)" stroke-width="2.5"/>
+        <line x1="40" y1="150" x2="70" y2="185" stroke="var(--rose)" stroke-width="2.5"/>
+        <circle cx="40" cy="150" r="9" fill="var(--navy)"/>
+        <circle cx="95" cy="100" r="12" fill="var(--gold)"/>
+        <circle cx="150" cy="130" r="8" fill="var(--mint)"/>
+        <circle cx="120" cy="55" r="7" fill="var(--rose)"/>
+        <circle cx="70" cy="185" r="6" fill="var(--navy)"/>
+      </svg>
+    </div>
+    <span class="eyebrow">🎓 Dành cho tân sinh viên UEH</span>
+    <div class="mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </div>
     <h1 class="disp" id="auth-title">Đăng nhập</h1>
     <p class="sub">Kết nối sinh viên UEH — trò chuyện, tìm bạn đồng hành, khám phá quanh trường.</p>
     <div class="field">
@@ -182,6 +230,7 @@
     <p class="err" id="auth-error" style="display:none;">Nhập đầy đủ email và mật khẩu nhé.</p>
     <button class="btn-block" id="auth-btn" onclick="doAuth()">Đăng nhập</button>
     <p class="switch">Chưa có tài khoản? <b onclick="toggleAuthMode()">Đăng ký</b></p>
+    <p class="credit">Đồ án nhóm TDTK · Design Thinking · UEH</p>
   </section>
 
   <!-- MAIN SHELL -->
@@ -206,18 +255,27 @@
 
       <!-- HOME -->
       <section class="tabscreen active" id="tab-home">
-        <p class="greet" id="home-greet"></p>
+        <div class="hero">
+          <p class="hi" id="home-hi">Chào bạn 👋</p>
+          <p class="sub" id="home-sub">Hôm nay có gì mới ở UEH Connect?</p>
+          <div class="dots">
+            <span style="background:var(--navy);"></span>
+            <span style="background:var(--gold);"></span>
+            <span style="background:var(--mint);"></span>
+            <span style="background:var(--rose);"></span>
+          </div>
+        </div>
 
-        <div class="sec-head"><h3>Hoạt động gần đây</h3><a onclick="switchTab('forum')">Xem tất cả</a></div>
+        <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--navy);"></span><h3>Hoạt động gần đây</h3></div><a onclick="switchTab('forum')">Xem tất cả</a></div>
         <div class="hrow" id="home-forum"></div>
 
-        <div class="sec-head"><h3>Kèo đang tìm người</h3><a onclick="switchTab('activities')">Xem tất cả</a></div>
+        <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--gold);"></span><h3>Kèo đang tìm người</h3></div><a onclick="switchTab('activities')">Xem tất cả</a></div>
         <div class="hrow" id="home-activities"></div>
 
-        <div class="sec-head"><h3>Confession nổi bật</h3><a onclick="switchTab('confession')">Xem tất cả</a></div>
+        <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--rose);"></span><h3>Confession nổi bật</h3></div><a onclick="switchTab('confession')">Xem tất cả</a></div>
         <div class="hrow" id="home-confession"></div>
 
-        <div class="sec-head"><h3>Challenge đang diễn ra</h3><a onclick="switchTab('challenge')">Xem tất cả</a></div>
+        <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--mint);"></span><h3>Challenge đang diễn ra</h3></div><a onclick="switchTab('challenge')">Xem tất cả</a></div>
         <div class="hrow" id="home-challenge"></div>
       </section>
 
@@ -436,7 +494,8 @@ function doAuth(){
   userEmail = email;
   document.getElementById('screen-auth').style.display='none';
   document.getElementById('shell').style.display='flex';
-  document.getElementById('home-greet').textContent = 'Chào ' + namePart + ', hôm nay có gì mới?';
+  document.getElementById('home-hi').textContent = 'Chào ' + namePart + ' 👋';
+  document.getElementById('home-sub').textContent = 'Hôm nay có gì mới ở UEH Connect?';
   document.getElementById('profile-email').textContent = email;
   document.getElementById('profile-avatar').textContent = initials(namePart.replace(/[.\d]/g,' ')) || 'SV';
   renderAll();
@@ -586,30 +645,42 @@ function doReport(kind, id){
 function renderHome(){
   document.getElementById('home-forum').innerHTML = forumPosts.slice(0,4).map(p=>`
     <div class="hcard" onclick="switchTab('forum')">
-      <span class="tag-pill navy tag">${p.cat}</span>
-      <p>${escapeHtml(p.text.slice(0,60))}${p.text.length>60?'…':''}</p>
-      <p class="meta">${p.anon?'Ẩn danh':p.author} · ${p.time}</p>
+      <div class="accent" style="background:var(--navy);"></div>
+      <div class="hc-body">
+        <span class="tag-pill navy tag">${p.cat}</span>
+        <p>${escapeHtml(p.text.slice(0,60))}${p.text.length>60?'…':''}</p>
+        <p class="meta">${p.anon?'Ẩn danh':p.author} · ${p.time}</p>
+      </div>
     </div>`).join('') || '<div class="empty">Chưa có bài viết</div>';
 
   document.getElementById('home-activities').innerHTML = activities.map(a=>`
     <div class="hcard" onclick="switchTab('activities')">
-      <span class="tag-pill gold tag">Còn ${a.spots-a.filled} chỗ</span>
-      <p>${escapeHtml(a.title)}</p>
-      <p class="meta">${a.place} · ${a.time}</p>
+      <div class="accent" style="background:var(--gold);"></div>
+      <div class="hc-body">
+        <span class="tag-pill gold tag">Còn ${a.spots-a.filled} chỗ</span>
+        <p>${escapeHtml(a.title)}</p>
+        <p class="meta">${a.place} · ${a.time}</p>
+      </div>
     </div>`).join('') || '<div class="empty">Chưa có kèo</div>';
 
   document.getElementById('home-confession').innerHTML = [...confessions].sort((a,b)=>b.hearts-a.hearts).slice(0,4).map(c=>`
     <div class="hcard" onclick="switchTab('confession')">
-      <span class="tag-pill rose tag">Ẩn danh</span>
-      <p>${escapeHtml(c.text.slice(0,60))}${c.text.length>60?'…':''}</p>
-      <p class="meta">${c.hearts} lượt tim</p>
+      <div class="accent" style="background:var(--rose);"></div>
+      <div class="hc-body">
+        <span class="tag-pill rose tag">Ẩn danh</span>
+        <p>${escapeHtml(c.text.slice(0,60))}${c.text.length>60?'…':''}</p>
+        <p class="meta">${c.hearts} lượt tim</p>
+      </div>
     </div>`).join('') || '<div class="empty">Chưa có confession</div>';
 
   document.getElementById('home-challenge').innerHTML = challenges.map(ch=>`
     <div class="hcard" onclick="switchTab('challenge')">
-      <span class="tag-pill mint tag">${ch.points} điểm</span>
-      <p>${escapeHtml(ch.title)}</p>
-      <p class="meta">${ch.progress}% hoàn thành</p>
+      <div class="accent" style="background:var(--mint);"></div>
+      <div class="hc-body">
+        <span class="tag-pill mint tag">${ch.points} điểm</span>
+        <p>${escapeHtml(ch.title)}</p>
+        <p class="meta">${ch.progress}% hoàn thành</p>
+      </div>
     </div>`).join('');
 }
 
