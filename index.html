@@ -266,8 +266,8 @@
           </div>
         </div>
 
-        <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--navy);"></span><h3>Hoạt động gần đây</h3></div><a onclick="switchTab('forum')">Xem tất cả</a></div>
-        <div class="hrow" id="home-forum"></div>
+        <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--navy);"></span><h3>Gợi ý kết nối hôm nay</h3></div><a onclick="switchTab('match')">Xem tất cả</a></div>
+        <div id="home-match"></div>
 
         <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--gold);"></span><h3>Kèo đang tìm người</h3></div><a onclick="switchTab('activities')">Xem tất cả</a></div>
         <div class="hrow" id="home-activities"></div>
@@ -279,21 +279,12 @@
         <div class="hrow" id="home-challenge"></div>
       </section>
 
-      <!-- FORUM -->
-      <section class="tabscreen" id="tab-forum">
-        <div class="chips" id="forum-chips"></div>
-        <div class="composer">
-          <textarea id="forum-text" placeholder="Bạn muốn hỏi hoặc chia sẻ điều gì?"></textarea>
-          <div class="grid2">
-            <select id="forum-cat">
-              <option>Học tập</option><option>Đời sống</option><option>Ăn uống</option><option>Giải trí</option><option>Kinh nghiệm</option>
-            </select>
-            <label class="chk" style="align-self:center;"><input type="checkbox" id="forum-anon"/> Ẩn danh</label>
-          </div>
-          <p class="err" id="forum-error" style="display:none;">Nhập nội dung trước khi đăng nhé.</p>
-          <div class="row-end"><span></span><button class="btn-primary" onclick="postForum()">Đăng bài</button></div>
-        </div>
-        <div id="forum-list"></div>
+      <!-- DAILY MATCH -->
+      <section class="tabscreen" id="tab-match">
+        <div class="sec-head" style="margin-top:0;"><h3>Ghép đôi hôm nay</h3></div>
+        <div id="match-card"></div>
+        <div class="sec-head"><h3>Lịch sử kết nối</h3></div>
+        <div id="match-history"></div>
       </section>
 
       <!-- ACTIVITIES -->
@@ -342,11 +333,11 @@
         <div class="stat-grid">
           <div class="stat-box"><p class="num disp" id="stat-points">0</p><p class="lbl2">Điểm</p></div>
           <div class="stat-box"><p class="num disp" id="stat-joined">0</p><p class="lbl2">Kèo tham gia</p></div>
-          <div class="stat-box"><p class="num disp" id="stat-posts">0</p><p class="lbl2">Bài đã đăng</p></div>
+          <div class="stat-box"><p class="num disp" id="stat-posts">0</p><p class="lbl2">Bạn mới</p></div>
         </div>
         <div class="sec-head" style="margin-top:0;"><h3>Huy hiệu</h3></div>
         <div class="badge-row" id="profile-badges"></div>
-        <div class="sec-head"><h3>Đã lưu</h3></div>
+        <div class="sec-head"><h3>Đã kết nối</h3></div>
         <div id="profile-bookmarks"></div>
         <button class="logout" onclick="logout()">Đăng xuất</button>
       </section>
@@ -358,9 +349,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
         <span class="lbl">Home</span>
       </button>
-      <button data-tab="forum" onclick="switchTab('forum')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.38 8.5 8.5 0 0 1-4-1L3 20l1.1-5.5A8.4 8.4 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3a8.5 8.5 0 0 1 9.5 8.5Z"/></svg>
-        <span class="lbl">Forum</span>
+      <button data-tab="match" onclick="switchTab('match')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg>
+        <span class="lbl">Ghép đôi</span>
       </button>
       <button data-tab="activities" onclick="switchTab('activities')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -428,16 +419,15 @@
 let authMode = 'login';
 let userEmail = '';
 
-const CATS = ['Tất cả','Học tập','Đời sống','Ăn uống','Giải trí','Kinh nghiệm'];
-let forumFilter = 'Tất cả';
-
-let forumPosts = [
-  {id:1, cat:'Học tập', author:'Minh Anh', anon:false, text:'Có ai học chung môn Nguyên lý kế toán ca sáng thứ 3 không, lập nhóm ôn thi với! Mình học ở cơ sở N.', likes:8, liked:false, bookmarked:false, reports:0, time:'2 giờ trước', comments:[{who:'Gia Bảo', text:'Mình nè, nhắn tin nhóm nha'}, {who:'Thảo Vy', text:'Cho mình xin nhóm với, mình cũng học ca đó!'}, {who:'Hoàng Long', text:'Có tài liệu ôn chưa cho mình xin với'}]},
-  {id:2, cat:'Ăn uống', author:'Ẩn danh', anon:true, text:'Có quán cơm tấm trong hẻm nhỏ gần cơ sở B (đường Nguyễn Tri Phương) ngon mà rẻ, sinh viên nên thử.', likes:22, liked:false, bookmarked:false, reports:0, time:'4 giờ trước', comments:[{who:'Ngọc Hân', text:'Đúng rồi, mình ăn hoài, sườn nướng ngon lắm'}, {who:'Minh Anh', text:'Tên quán là gì vậy bạn, cho địa chỉ cụ thể với'}]},
-  {id:3, cat:'Đời sống', author:'Thảo Vy', anon:false, text:'Tháng đầu ở KTX hơi khó ngủ vì lạ chỗ, mọi người có tips gì không?', likes:5, liked:false, bookmarked:false, reports:0, time:'6 giờ trước', comments:[{who:'Gia Bảo', text:'Mang theo gối ôm quen thuộc từ nhà, mình cũng vậy hồi đầu'}, {who:'Ẩn danh', text:'Nghe nhạc không lời nhẹ nhẹ trước khi ngủ cũng đỡ hơn nhiều'}, {who:'Đăng Khoa', text:'Vài tuần là quen à, ráng lên bạn ơi'}]},
-  {id:4, cat:'Ăn uống', author:'Hoàng Long', anon:false, text:'Quán bún đậu trong hẻm đối diện cơ sở B (279 Nguyễn Tri Phương) ngon xuất sắc, giá sinh viên luôn.', likes:17, liked:false, bookmarked:false, reports:0, time:'8 giờ trước', comments:[{who:'Minh Thư', text:'Mắm tôm ở đó đậm vị thiệt sự'}]},
-  {id:5, cat:'Kinh nghiệm', author:'Ẩn danh', anon:true, text:'Ai học ở cơ sở B thì nên gửi xe ở bãi trong hẻm nhỏ gần Nguyễn Tri Phương, rẻ hơn bãi trước cổng nhiều.', likes:11, liked:false, bookmarked:false, reports:0, time:'10 giờ trước', comments:[{who:'Ngọc Hân', text:'Cảm ơn tip, mình gửi trước cổng hoài giờ mới biết'}, {who:'Thảo Vy', text:'Bãi đó có giữ xe qua đêm không bạn?'}]},
+const dailyMatchPool = [
+  {name:'Gia Bảo', major:'Kế toán', note:'Cùng học ở cơ sở N, thích cà phê', starter:'Cả hai đều học ở cơ sở N — bạn hay ăn ở đâu quanh đó?'},
+  {name:'Minh Thư', major:'Marketing', note:'Cùng khóa, hay xem phim cuối tuần', starter:'Bạn có hay xem phim ở rạp gần trường không?'},
+  {name:'Đăng Khoa', major:'Kinh doanh quốc tế', note:'Cùng tham gia CLB tình nguyện', starter:'Bạn tham gia CLB tình nguyện lâu chưa?'},
+  {name:'Ngọc Hân', major:'Tài chính', note:'Cùng lớp tiếng Anh tăng cường', starter:'Bài tập tiếng Anh tuần này bạn làm xong chưa?'},
+  {name:'Thảo Vy', major:'Kế toán', note:'Cùng ở KTX, thích đọc sách', starter:'Dạo này bạn đọc cuốn gì hay chưa, giới thiệu mình với!'},
 ];
+let currentMatch = dailyMatchPool[0];
+let chattedWith = new Set();
 
 let activities = [
   {id:1, title:'Đi ăn lẩu gần cơ sở B', place:'Lẩu Phan, 279 Nguyễn Tri Phương', time:'18h thứ 7', spots:4, filled:2, cost:'~120k/người', joined:false, creator:'Đăng Khoa'},
@@ -454,7 +444,7 @@ let confessions = [
 let challenges = [
   {id:1, title:'Khám phá 3 quán ăn mới quanh trường', desc:'Ghé và gửi ảnh minh chứng tại 3 địa điểm bạn chưa từng thử.', points:30, progress:0, joined:false, badge:'Người khám phá', verify:'photo', proofs:[]},
   {id:2, title:'Kết bạn qua 1 kèo Đi cùng nhau', desc:'Tham gia hoặc tạo 1 kèo và có mặt — tự động ghi nhận khi bạn bấm Tham gia thật.', points:20, progress:0, joined:false, badge:'Bạn đồng hành', verify:'auto'},
-  {id:3, title:'Đăng 3 bài trên Forum', desc:'Chia sẻ, đặt câu hỏi hoặc trả lời trên diễn đàn — tự động ghi nhận theo số bài bạn đăng thật.', points:15, progress:0, joined:false, badge:'Cây bút cộng đồng', verify:'auto'},
+  {id:3, title:'Trò chuyện với 3 người bạn mới', desc:'Bắt đầu trò chuyện với 3 người khác nhau qua Ghép đôi — tự động ghi nhận khi bạn nhắn tin thật.', points:15, progress:0, joined:false, badge:'Cây bút cộng đồng', verify:'auto'},
 ];
 
 let notifications = [
@@ -469,7 +459,6 @@ let leaderboard = [
 ];
 
 let chatThreads = {}; // activityId -> messages[]
-let userPosts = 0;
 let currentModalActivity = null;
 
 function escapeHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
@@ -529,11 +518,11 @@ function closeOverlay(id){ document.getElementById(id).style.display='none'; }
 function runFullSearch(q){
   const query=q.toLowerCase();
   let out=[];
-  forumPosts.filter(p=>p.text.toLowerCase().includes(query)).forEach(p=>out.push({type:'Forum', text:p.text, action:()=>{closeOverlay('overlay-search');switchTab('forum');}}));
+  dailyMatchPool.filter(m=>m.name.toLowerCase().includes(query)||m.major.toLowerCase().includes(query)).forEach(m=>out.push({type:'Ghép đôi', text:m.name+' · '+m.major, action:()=>{closeOverlay('overlay-search');switchTab('match');}}));
   activities.filter(a=>a.title.toLowerCase().includes(query)||a.place.toLowerCase().includes(query)).forEach(a=>out.push({type:'Đi cùng nhau', text:a.title+' · '+a.place, action:()=>{closeOverlay('overlay-search');switchTab('activities');}}));
   confessions.filter(c=>c.text.toLowerCase().includes(query)).forEach(c=>out.push({type:'Confession', text:c.text, action:()=>{closeOverlay('overlay-search');switchTab('confession');}}));
   const box=document.getElementById('search-results');
-  if(!query.trim()){ box.innerHTML='<div class="empty">Gõ từ khóa để tìm bài viết, kèo hoặc confession.</div>'; return; }
+  if(!query.trim()){ box.innerHTML='<div class="empty">Gõ từ khóa để tìm người ghép đôi, kèo hoặc confession.</div>'; return; }
   if(out.length===0){ box.innerHTML='<div class="empty">Không tìm thấy kết quả phù hợp.</div>'; return; }
   window.__searchResults = out;
   box.innerHTML = out.map((r,i)=>`
@@ -590,32 +579,31 @@ function openChat(actId){
   if(!chatThreads[actId]) chatThreads[actId] = [
     {who: activities.find(a=>a.id===actId).creator, me:false, text:'Chào mọi người, mình lên đường lúc đúng giờ nha!'},
   ];
-  renderChatModal();
+  renderChatModal(activities.find(a=>a.id===actId).title);
 }
-function renderChatModal(){
-  const act = activities.find(a=>a.id===currentModalActivity);
+function renderChatModal(title){
   const msgs = chatThreads[currentModalActivity];
   openModal(`
-    <div class="m-head"><b>Trò chuyện · ${escapeHtml(act.title)}</b><button class="backbtn" onclick="closeModal()">
+    <div class="m-head"><b>Trò chuyện · ${escapeHtml(title)}</b><button class="backbtn" onclick="closeModal()">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
     </button></div>
     <div class="m-body" id="chat-body">
       ${msgs.map(m=>`<div class="chat-msg ${m.me?'me':''}"><div class="m-who">${escapeHtml(m.who)}</div><div class="m-bub">${escapeHtml(m.text)}</div></div>`).join('')}
     </div>
     <div class="chat-input-row">
-      <input id="chat-input" placeholder="Nhắn gì đó..." onkeydown="if(event.key==='Enter') sendChat();" />
-      <button class="btn-primary" onclick="sendChat()">Gửi</button>
+      <input id="chat-input" placeholder="Nhắn gì đó..." onkeydown="if(event.key==='Enter') sendChat('${escapeHtml(title).replace(/'/g,"\\'")}');" />
+      <button class="btn-primary" onclick="sendChat('${escapeHtml(title).replace(/'/g,"\\'")}')">Gửi</button>
     </div>
   `);
   const body=document.getElementById('chat-body');
   body.scrollTop = body.scrollHeight;
 }
-function sendChat(){
+function sendChat(title){
   const input = document.getElementById('chat-input');
   if(!input.value.trim()) return;
   chatThreads[currentModalActivity].push({who:'Bạn', me:true, text:input.value.trim()});
   input.value='';
-  renderChatModal();
+  renderChatModal(title);
 }
 
 function confirmReport(kind, id){
@@ -629,29 +617,19 @@ function confirmReport(kind, id){
   `);
 }
 function doReport(kind, id){
-  if(kind==='forum'){
-    const p = forumPosts.find(x=>x.id===id); p.reports++;
-    if(p.reports>=3) { showToast('Bài viết đã bị gắn cờ, đang chờ kiểm duyệt.'); } else { showToast('Đã gửi báo cáo, cảm ơn bạn.'); }
-    renderForum();
-  } else {
-    const c = confessions.find(x=>x.id===id); c.reports++;
-    if(c.reports>=3){ c.flagged=true; showToast('Nội dung đã bị gắn cờ, đang chờ kiểm duyệt.'); } else { showToast('Đã gửi báo cáo, cảm ơn bạn.'); }
-    renderConfession();
-  }
+  const c = confessions.find(x=>x.id===id); c.reports++;
+  if(c.reports>=3){ c.flagged=true; showToast('Nội dung đã bị gắn cờ, đang chờ kiểm duyệt.'); } else { showToast('Đã gửi báo cáo, cảm ơn bạn.'); }
+  renderConfession();
   closeModal();
 }
 
 /* ===================== HOME ===================== */
 function renderHome(){
-  document.getElementById('home-forum').innerHTML = forumPosts.slice(0,4).map(p=>`
-    <div class="hcard" onclick="switchTab('forum')">
-      <div class="accent" style="background:var(--navy);"></div>
-      <div class="hc-body">
-        <span class="tag-pill navy tag">${p.cat}</span>
-        <p>${escapeHtml(p.text.slice(0,60))}${p.text.length>60?'…':''}</p>
-        <p class="meta">${p.anon?'Ẩn danh':p.author} · ${p.time}</p>
-      </div>
-    </div>`).join('') || '<div class="empty">Chưa có bài viết</div>';
+  document.getElementById('home-match').innerHTML = `
+    <div class="card" onclick="switchTab('match')" style="cursor:pointer;">
+      <div class="ph"><div class="avatar">${initials(currentMatch.name)}</div><div style="flex:1;"><p class="who">${escapeHtml(currentMatch.name)}</p><p class="meta">${escapeHtml(currentMatch.major)}</p></div><span class="tag-pill navy">Hôm nay</span></div>
+      <p class="body">${escapeHtml(currentMatch.note)}</p>
+    </div>`;
 
   document.getElementById('home-activities').innerHTML = activities.map(a=>`
     <div class="hcard" onclick="switchTab('activities')">
@@ -684,77 +662,49 @@ function renderHome(){
     </div>`).join('');
 }
 
-/* ===================== FORUM ===================== */
-function renderForumChips(){
-  document.getElementById('forum-chips').innerHTML = CATS.map(c=>`
-    <button class="chip ${c===forumFilter?'active':''}" onclick="setForumFilter('${c}')">${c}</button>`).join('');
-}
-function setForumFilter(c){ forumFilter=c; renderForumChips(); renderForum(); }
-function renderForum(){
-  renderForumChips();
-  const list = forumPosts.filter(p => forumFilter==='Tất cả' || p.cat===forumFilter);
-  const box = document.getElementById('forum-list');
-  if(list.length===0){ box.innerHTML='<div class="empty">Chưa có bài viết trong mục này.</div>'; return; }
-  box.innerHTML = list.map(p=>`
-    <div class="card ${p.reports>=3?'flagged':''}">
-      ${p.reports>=3?'<p class="flag-note">⚑ Nội dung đang được kiểm duyệt do có báo cáo</p>':''}
-      <div class="ph">
-        <div class="avatar ${p.anon?'anon':''}">${p.anon?'?':initials(p.author)}</div>
-        <div style="flex:1;">
-          <p class="who">${p.anon?'Ẩn danh':escapeHtml(p.author)}</p>
-          <p class="meta">${p.time}</p>
-        </div>
-        <span class="tag-pill navy">${p.cat}</span>
-      </div>
-      <p class="body">${escapeHtml(p.text)}</p>
+/* ===================== DAILY MATCH ===================== */
+function renderMatch(){
+  const m = currentMatch;
+  document.getElementById('match-card').innerHTML = `
+    <div class="card">
+      <div class="ph"><div class="avatar">${initials(m.name)}</div><div style="flex:1;"><p class="who">${escapeHtml(m.name)}</p><p class="meta">${escapeHtml(m.major)}</p></div><span class="tag-pill navy">Điểm chung</span></div>
+      <p class="body">${escapeHtml(m.note)}</p>
+      <p class="body" style="font-style:italic;color:var(--text-secondary);">Gợi ý mở lời: "${escapeHtml(m.starter)}"</p>
       <div class="actions">
-        <button class="aicon ${p.liked?'on':''}" onclick="toggleLike(${p.id})">
-          <svg viewBox="0 0 24 24" fill="${p.liked?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>${p.likes}
-        </button>
-        <button class="aicon" onclick="toggleComments(${p.id})">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.38 8.5 8.5 0 0 1-4-1L3 20l1.1-5.5A8.4 8.4 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3a8.5 8.5 0 0 1 9.5 8.5Z"/></svg>${p.comments.length}
-        </button>
-        <button class="aicon ${p.bookmarked?'on':''}" onclick="toggleBookmark(${p.id})">
-          <svg viewBox="0 0 24 24" fill="${p.bookmarked?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8"><path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/></svg>
-        </button>
-        <button class="aicon spacer" onclick="confirmReport('forum',${p.id})">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg>
-        </button>
+        <button class="btn-primary" onclick="startMatchChat()">Bắt đầu trò chuyện</button>
+        <span class="aicon spacer"></span>
+        <button class="btn-ghost" onclick="skipMatch()">Đổi người khác</button>
       </div>
-      <div class="cbox" id="cbox-${p.id}" style="display:none;">
-        ${p.comments.map(c=>`<p class="citem"><b>${escapeHtml(c.who)}:</b> ${escapeHtml(c.text)}</p>`).join('') || '<p class="citem" style="color:var(--text-muted);">Chưa có bình luận.</p>'}
-        <div class="crow">
-          <input id="cin-${p.id}" placeholder="Viết bình luận..." onkeydown="if(event.key==='Enter') addComment(${p.id})"/>
-          <button class="btn-ghost" onclick="addComment(${p.id})">Gửi</button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-function toggleLike(id){ const p=forumPosts.find(x=>x.id===id); p.liked=!p.liked; p.likes += p.liked?1:-1; renderForum(); renderHome(); }
-function toggleBookmark(id){ const p=forumPosts.find(x=>x.id===id); p.bookmarked=!p.bookmarked; renderForum(); renderProfile(); }
-function toggleComments(id){ const el=document.getElementById('cbox-'+id); el.style.display = el.style.display==='none' ? 'block' : 'none'; }
-function addComment(id){
-  const input=document.getElementById('cin-'+id);
-  if(!input.value.trim()) return;
-  forumPosts.find(x=>x.id===id).comments.push({who:'Bạn', text:input.value.trim()});
-  input.value='';
-  renderForum();
-  document.getElementById('cbox-'+id).style.display='block';
-}
-function postForum(){
-  const text=document.getElementById('forum-text');
-  const err=document.getElementById('forum-error');
-  if(!text.value.trim()){ err.style.display='block'; return; }
-  err.style.display='none';
-  const anon=document.getElementById('forum-anon').checked;
-  forumPosts.unshift({id:Date.now(), cat:document.getElementById('forum-cat').value, author:'Bạn', anon:anon, text:text.value.trim(), likes:0, liked:false, bookmarked:false, reports:0, time:'vừa xong', comments:[]});
-  text.value=''; document.getElementById('forum-anon').checked=false;
-  userPosts++;
-  bumpChallenge('post');
-  renderForum(); renderHome(); renderProfile();
-  showToast('Đã đăng bài lên Forum.');
-}
+    </div>`;
 
+  const history = [...chattedWith];
+  document.getElementById('match-history').innerHTML = history.length ? history.map(name=>{
+    const p = dailyMatchPool.find(x=>x.name===name);
+    return `<div class="card" onclick="openNamedMatchChat('${name}')" style="cursor:pointer;">
+      <div class="ph"><div class="avatar">${initials(name)}</div><div style="flex:1;"><p class="who">${escapeHtml(name)}</p><p class="meta">${escapeHtml(p?p.major:'')}</p></div></div>
+    </div>`;
+  }).join('') : '<div class="empty">Chưa có lượt kết nối nào.</div>';
+}
+function skipMatch(){
+  const others = dailyMatchPool.filter(m=>m.name!==currentMatch.name);
+  currentMatch = others[Math.floor(Math.random()*others.length)];
+  renderMatch(); renderHome();
+  showToast('Đã đổi sang người ghép khác.');
+}
+function startMatchChat(){ openNamedMatchChat(currentMatch.name); }
+function openNamedMatchChat(name){
+  const person = dailyMatchPool.find(x=>x.name===name);
+  const key = 'match:'+name;
+  const isNew = !chattedWith.has(name);
+  if(!chatThreads[key]) chatThreads[key] = [{who:person.name, me:false, text:person.starter}];
+  currentModalActivity = key;
+  renderChatModal(person.name);
+  if(isNew){
+    chattedWith.add(name);
+    bumpChallenge('match');
+    renderMatch(); renderProfile();
+  }
+}
 /* ===================== ACTIVITIES ===================== */
 function renderActivities(){
   const box=document.getElementById('activities-list');
@@ -898,9 +848,9 @@ function celebrateBadge(badgeName){
 }
 
 function bumpChallenge(arg){
-  // auto-progress triggers from forum post / activity join — no manual/free tap allowed
+  // auto-progress triggers from starting a new match chat / activity join — no manual/free tap allowed
   challenges.forEach(ch=>{
-    if(arg==='post' && ch.title.includes('Forum') && ch.progress<100){
+    if(arg==='match' && ch.title.includes('bạn mới') && ch.progress<100){
       ch.progress=Math.min(100, ch.progress+34); ch.joined=true;
       if(ch.progress>=100) celebrateBadge(ch.badge);
     }
@@ -928,16 +878,16 @@ function totalPoints(){
 function renderProfile(){
   document.getElementById('stat-points').textContent = totalPoints();
   document.getElementById('stat-joined').textContent = activities.filter(a=>a.joined).length;
-  document.getElementById('stat-posts').textContent = userPosts;
+  document.getElementById('stat-posts').textContent = chattedWith.size;
   const badges = challenges.filter(c=>c.progress>=100);
   document.getElementById('profile-badges').innerHTML = badges.length ? badges.map(b=>`<span class="badge-item">🏅 ${escapeHtml(b.badge)}</span>`).join('') : '<div class="empty" style="padding:14px 0;">Chưa có huy hiệu nào, hoàn thành thử thách để nhận nhé.</div>';
-  const marks = forumPosts.filter(p=>p.bookmarked);
-  document.getElementById('profile-bookmarks').innerHTML = marks.length ? marks.map(p=>`<div class="card"><p class="body">${escapeHtml(p.text)}</p></div>`).join('') : '<div class="empty">Chưa lưu bài viết nào.</div>';
+  const names = [...chattedWith];
+  document.getElementById('profile-bookmarks').innerHTML = names.length ? names.map(n=>`<div class="card"><p class="body">Đã kết nối với ${escapeHtml(n)}</p></div>`).join('') : '<div class="empty">Chưa kết nối với ai qua Ghép đôi.</div>';
 }
 
 /* ===================== INIT ===================== */
 function renderAll(){
-  renderHome(); renderForum(); renderActivities(); renderConfession(); renderChallenge(); renderProfile();
+  renderHome(); renderMatch(); renderActivities(); renderConfession(); renderChallenge(); renderProfile();
 }
 </script>
 
