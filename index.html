@@ -266,10 +266,7 @@
           </div>
         </div>
 
-        <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--navy);"></span><h3>Gợi ý kết nối hôm nay</h3></div><a onclick="switchTab('match')">Xem tất cả</a></div>
-        <div id="home-match"></div>
-
-        <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--gold);"></span><h3>Kèo đang tìm người</h3></div><a onclick="switchTab('activities')">Xem tất cả</a></div>
+        <div class="sec-head" style="margin-top:0;"><div class="sh-left"><span class="sh-dot" style="background:var(--gold);"></span><h3>Kèo đang tìm người</h3></div><a onclick="switchTab('activities')">Xem tất cả</a></div>
         <div class="hrow" id="home-activities"></div>
 
         <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--rose);"></span><h3>Confession nổi bật</h3></div><a onclick="switchTab('confession')">Xem tất cả</a></div>
@@ -277,14 +274,6 @@
 
         <div class="sec-head"><div class="sh-left"><span class="sh-dot" style="background:var(--mint);"></span><h3>Challenge đang diễn ra</h3></div><a onclick="switchTab('challenge')">Xem tất cả</a></div>
         <div class="hrow" id="home-challenge"></div>
-      </section>
-
-      <!-- DAILY MATCH -->
-      <section class="tabscreen" id="tab-match">
-        <div class="sec-head" style="margin-top:0;"><h3>Ghép đôi hôm nay</h3></div>
-        <div id="match-card"></div>
-        <div class="sec-head"><h3>Lịch sử kết nối</h3></div>
-        <div id="match-history"></div>
       </section>
 
       <!-- ACTIVITIES -->
@@ -330,15 +319,12 @@
             <p class="pemail" id="profile-email"></p>
           </div>
         </div>
-        <div class="stat-grid">
+        <div class="stat-grid" style="grid-template-columns:repeat(2,1fr);">
           <div class="stat-box"><p class="num disp" id="stat-points">0</p><p class="lbl2">Điểm</p></div>
           <div class="stat-box"><p class="num disp" id="stat-joined">0</p><p class="lbl2">Kèo tham gia</p></div>
-          <div class="stat-box"><p class="num disp" id="stat-posts">0</p><p class="lbl2">Bạn mới</p></div>
         </div>
         <div class="sec-head" style="margin-top:0;"><h3>Huy hiệu</h3></div>
         <div class="badge-row" id="profile-badges"></div>
-        <div class="sec-head"><h3>Đã kết nối</h3></div>
-        <div id="profile-bookmarks"></div>
         <button class="logout" onclick="logout()">Đăng xuất</button>
       </section>
 
@@ -348,10 +334,6 @@
       <button data-tab="home" onclick="switchTab('home')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
         <span class="lbl">Home</span>
-      </button>
-      <button data-tab="match" onclick="switchTab('match')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg>
-        <span class="lbl">Ghép đôi</span>
       </button>
       <button data-tab="activities" onclick="switchTab('activities')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -419,15 +401,7 @@
 let authMode = 'login';
 let userEmail = '';
 
-const dailyMatchPool = [
-  {name:'Gia Bảo', major:'Kế toán', note:'Cùng học ở cơ sở N, thích cà phê', starter:'Cả hai đều học ở cơ sở N — bạn hay ăn ở đâu quanh đó?'},
-  {name:'Minh Thư', major:'Marketing', note:'Cùng khóa, hay xem phim cuối tuần', starter:'Bạn có hay xem phim ở rạp gần trường không?'},
-  {name:'Đăng Khoa', major:'Kinh doanh quốc tế', note:'Cùng tham gia CLB tình nguyện', starter:'Bạn tham gia CLB tình nguyện lâu chưa?'},
-  {name:'Ngọc Hân', major:'Tài chính', note:'Cùng lớp tiếng Anh tăng cường', starter:'Bài tập tiếng Anh tuần này bạn làm xong chưa?'},
-  {name:'Thảo Vy', major:'Kế toán', note:'Cùng ở KTX, thích đọc sách', starter:'Dạo này bạn đọc cuốn gì hay chưa, giới thiệu mình với!'},
-];
-let currentMatch = dailyMatchPool[0];
-let chattedWith = new Set();
+
 
 let activities = [
   {id:1, title:'Đi ăn lẩu gần cơ sở B', place:'Lẩu Phan, 279 Nguyễn Tri Phương', time:'18h thứ 7', spots:4, filled:2, cost:'~120k/người', joined:false, creator:'Đăng Khoa'},
@@ -444,7 +418,7 @@ let confessions = [
 let challenges = [
   {id:1, title:'Khám phá 3 quán ăn mới quanh trường', desc:'Ghé và gửi ảnh minh chứng tại 3 địa điểm bạn chưa từng thử.', points:30, progress:0, joined:false, badge:'Người khám phá', verify:'photo', proofs:[]},
   {id:2, title:'Kết bạn qua 1 kèo Đi cùng nhau', desc:'Tham gia hoặc tạo 1 kèo và có mặt — tự động ghi nhận khi bạn bấm Tham gia thật.', points:20, progress:0, joined:false, badge:'Bạn đồng hành', verify:'auto'},
-  {id:3, title:'Trò chuyện với 3 người bạn mới', desc:'Bắt đầu trò chuyện với 3 người khác nhau qua Ghép đôi — tự động ghi nhận khi bạn nhắn tin thật.', points:15, progress:0, joined:false, badge:'Cây bút cộng đồng', verify:'auto'},
+  {id:3, title:'Chia sẻ 3 confession', desc:'Đăng ít nhất 3 chia sẻ ẩn danh — tự động ghi nhận theo số bài bạn đăng thật.', points:15, progress:0, joined:false, badge:'Người kể chuyện', verify:'auto'},
 ];
 
 let notifications = [
@@ -518,11 +492,10 @@ function closeOverlay(id){ document.getElementById(id).style.display='none'; }
 function runFullSearch(q){
   const query=q.toLowerCase();
   let out=[];
-  dailyMatchPool.filter(m=>m.name.toLowerCase().includes(query)||m.major.toLowerCase().includes(query)).forEach(m=>out.push({type:'Ghép đôi', text:m.name+' · '+m.major, action:()=>{closeOverlay('overlay-search');switchTab('match');}}));
   activities.filter(a=>a.title.toLowerCase().includes(query)||a.place.toLowerCase().includes(query)).forEach(a=>out.push({type:'Đi cùng nhau', text:a.title+' · '+a.place, action:()=>{closeOverlay('overlay-search');switchTab('activities');}}));
   confessions.filter(c=>c.text.toLowerCase().includes(query)).forEach(c=>out.push({type:'Confession', text:c.text, action:()=>{closeOverlay('overlay-search');switchTab('confession');}}));
   const box=document.getElementById('search-results');
-  if(!query.trim()){ box.innerHTML='<div class="empty">Gõ từ khóa để tìm người ghép đôi, kèo hoặc confession.</div>'; return; }
+  if(!query.trim()){ box.innerHTML='<div class="empty">Gõ từ khóa để tìm kèo hoặc confession.</div>'; return; }
   if(out.length===0){ box.innerHTML='<div class="empty">Không tìm thấy kết quả phù hợp.</div>'; return; }
   window.__searchResults = out;
   box.innerHTML = out.map((r,i)=>`
@@ -625,12 +598,6 @@ function doReport(kind, id){
 
 /* ===================== HOME ===================== */
 function renderHome(){
-  document.getElementById('home-match').innerHTML = `
-    <div class="card" onclick="switchTab('match')" style="cursor:pointer;">
-      <div class="ph"><div class="avatar">${initials(currentMatch.name)}</div><div style="flex:1;"><p class="who">${escapeHtml(currentMatch.name)}</p><p class="meta">${escapeHtml(currentMatch.major)}</p></div><span class="tag-pill navy">Hôm nay</span></div>
-      <p class="body">${escapeHtml(currentMatch.note)}</p>
-    </div>`;
-
   document.getElementById('home-activities').innerHTML = activities.map(a=>`
     <div class="hcard" onclick="switchTab('activities')">
       <div class="accent" style="background:var(--gold);"></div>
@@ -662,49 +629,6 @@ function renderHome(){
     </div>`).join('');
 }
 
-/* ===================== DAILY MATCH ===================== */
-function renderMatch(){
-  const m = currentMatch;
-  document.getElementById('match-card').innerHTML = `
-    <div class="card">
-      <div class="ph"><div class="avatar">${initials(m.name)}</div><div style="flex:1;"><p class="who">${escapeHtml(m.name)}</p><p class="meta">${escapeHtml(m.major)}</p></div><span class="tag-pill navy">Điểm chung</span></div>
-      <p class="body">${escapeHtml(m.note)}</p>
-      <p class="body" style="font-style:italic;color:var(--text-secondary);">Gợi ý mở lời: "${escapeHtml(m.starter)}"</p>
-      <div class="actions">
-        <button class="btn-primary" onclick="startMatchChat()">Bắt đầu trò chuyện</button>
-        <span class="aicon spacer"></span>
-        <button class="btn-ghost" onclick="skipMatch()">Đổi người khác</button>
-      </div>
-    </div>`;
-
-  const history = [...chattedWith];
-  document.getElementById('match-history').innerHTML = history.length ? history.map(name=>{
-    const p = dailyMatchPool.find(x=>x.name===name);
-    return `<div class="card" onclick="openNamedMatchChat('${name}')" style="cursor:pointer;">
-      <div class="ph"><div class="avatar">${initials(name)}</div><div style="flex:1;"><p class="who">${escapeHtml(name)}</p><p class="meta">${escapeHtml(p?p.major:'')}</p></div></div>
-    </div>`;
-  }).join('') : '<div class="empty">Chưa có lượt kết nối nào.</div>';
-}
-function skipMatch(){
-  const others = dailyMatchPool.filter(m=>m.name!==currentMatch.name);
-  currentMatch = others[Math.floor(Math.random()*others.length)];
-  renderMatch(); renderHome();
-  showToast('Đã đổi sang người ghép khác.');
-}
-function startMatchChat(){ openNamedMatchChat(currentMatch.name); }
-function openNamedMatchChat(name){
-  const person = dailyMatchPool.find(x=>x.name===name);
-  const key = 'match:'+name;
-  const isNew = !chattedWith.has(name);
-  if(!chatThreads[key]) chatThreads[key] = [{who:person.name, me:false, text:person.starter}];
-  currentModalActivity = key;
-  renderChatModal(person.name);
-  if(isNew){
-    chattedWith.add(name);
-    bumpChallenge('match');
-    renderMatch(); renderProfile();
-  }
-}
 /* ===================== ACTIVITIES ===================== */
 function renderActivities(){
   const box=document.getElementById('activities-list');
@@ -772,6 +696,7 @@ function postConfession(){
   confessions.unshift({id:Date.now(), text:text.value.trim(), hearts:0, hearted:false, reports:0, flagged:false});
   text.value='';
   renderConfession(); renderHome();
+  bumpChallenge('confess');
   showToast('Đã đăng confession ẩn danh.');
 }
 
@@ -848,9 +773,9 @@ function celebrateBadge(badgeName){
 }
 
 function bumpChallenge(arg){
-  // auto-progress triggers from starting a new match chat / activity join — no manual/free tap allowed
+  // auto-progress triggers from confession post / activity join — no manual/free tap allowed
   challenges.forEach(ch=>{
-    if(arg==='match' && ch.title.includes('bạn mới') && ch.progress<100){
+    if(arg==='confess' && ch.title.includes('confession') && ch.progress<100){
       ch.progress=Math.min(100, ch.progress+34); ch.joined=true;
       if(ch.progress>=100) celebrateBadge(ch.badge);
     }
@@ -878,16 +803,13 @@ function totalPoints(){
 function renderProfile(){
   document.getElementById('stat-points').textContent = totalPoints();
   document.getElementById('stat-joined').textContent = activities.filter(a=>a.joined).length;
-  document.getElementById('stat-posts').textContent = chattedWith.size;
   const badges = challenges.filter(c=>c.progress>=100);
   document.getElementById('profile-badges').innerHTML = badges.length ? badges.map(b=>`<span class="badge-item">🏅 ${escapeHtml(b.badge)}</span>`).join('') : '<div class="empty" style="padding:14px 0;">Chưa có huy hiệu nào, hoàn thành thử thách để nhận nhé.</div>';
-  const names = [...chattedWith];
-  document.getElementById('profile-bookmarks').innerHTML = names.length ? names.map(n=>`<div class="card"><p class="body">Đã kết nối với ${escapeHtml(n)}</p></div>`).join('') : '<div class="empty">Chưa kết nối với ai qua Ghép đôi.</div>';
 }
 
 /* ===================== INIT ===================== */
 function renderAll(){
-  renderHome(); renderMatch(); renderActivities(); renderConfession(); renderChallenge(); renderProfile();
+  renderHome(); renderActivities(); renderConfession(); renderChallenge(); renderProfile();
 }
 </script>
 
